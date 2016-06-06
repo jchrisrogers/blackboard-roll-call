@@ -37,7 +37,7 @@ function handleResponse(e) {
     
     // loop through the header columns
     for (i in headers){
-      if (headers[i] == "Timestamp"){ // special case if you include a 'Timestamp' column
+      if (headers[i] == "Timestamp"){ // 'Timestamp' column to keep track of the date
         row.push(new Date());
       } else { // else use header name to get data
         row.push(e.parameter[headers[i]]);
