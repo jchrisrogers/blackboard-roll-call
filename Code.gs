@@ -25,11 +25,11 @@ function handleResponse(e) {
   
   
   try {
-    // next set where we write the data - you could write to multiple/alternate destinations
+    // next set to write data, could write to multiple/alternate destinations
     var doc = SpreadsheetApp.openById(SCRIPT_PROP.getProperty("key"));
     var sheet = doc.getSheetByName(SHEET_NAME);
     
-    // we'll assume header is in row 1 but you can override with header_row in GET/POST data
+    // assume header is in row 1 but can override with header_row in GET/POST data
     var headRow = e.parameter.header_row || 1;
     var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
     var nextRow = sheet.getLastRow()+1; // get next row
@@ -72,7 +72,7 @@ function setup() {
 }
 
 
-
+// Get data 
 function numberOfStd() {
   var doc = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = doc.getSheetByName(SHEET_NAME);
