@@ -1,23 +1,28 @@
 package mypackage;
 
-
-
-
-
-
-
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.json.JsonFactory;
+import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.sheets.v4.SheetsScopes;
+import com.google.api.services.sheets.v4.model.BatchUpdateValuesRequest;
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
 import com.google.gdata.data.spreadsheet.SpreadsheetEntry;
 import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
 import com.google.gdata.util.ServiceException;
-import java.io.File;
+
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
@@ -37,7 +42,8 @@ public class UpdateSpreadsheet  {
     private static final java.io.File DATA_STORE_DIR = new java.io.File(
             System.getProperty("user.home"), ".credentials/sheets.googleapis.com-java-quickstart.json");
 
-
+    /** Global instance of the {@link FileDataStoreFactory}. */
+    private static FileDataStoreFactory DATA_STORE_FACTORY;
 
     /** Global instance of the JSON factory. */
     private static final JsonFactory JSON_FACTORY =
@@ -51,30 +57,44 @@ public class UpdateSpreadsheet  {
      * If modifying these scopes, delete your previously saved credentials
      * at ~/.credentials/sheets.googleapis.com-java-quickstart.json
      */
+    private static final List<String> SCOPES =
+            Arrays.asList(SheetsScopes.SPREADSHEETS_READONLY);
 
-
-
-
-
-
-    /** Create client id and secret **/
-    private static final String clientID = "532786746523-n7r8fv173dc96kfmlo59bfd8cn5mmh0c.apps.googleusercontent.com";
-    public static final String GOOGLE_ACCOUNT_USERNAME = "tle97@mail.ccsf.edu"; // Fill in google account username
-    public static final String GOOGLE_ACCOUNT_PASSWORD = "Iloveyouforever!"; // Fill in google account password
-    public static final String SPREADSHEET_URL = "https://docs.google.com/spreadsheets/d/1b4hMNU_H2CTot3s39643bw1OXtAXPZWdX7bC53d4n4A/edit";
-
+    static {
+        try {
+            HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+            DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
+        } catch (Throwable t) {
+            t.printStackTrace();
+            System.exit(1);
+        }
+    }
 
     /**
      * Creates an authorized Credential object.
      * @return an authorized Credential object.
      * @throws IOException
      */
+    public static Credential authorize() throws IOException {
+        // Load client secrets.
+        InputStream in =
+                SheetsQuickstart.class.getResourceAsStream("/client_secret.json");
+        GoogleClientSecrets clientSecrets =
+                GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
-    /**
-     * Build and return an authorized Sheets API client service.
-     * @return an authorized Sheets API client service
-     * @throws IOException
-     */
+        // Build flow and trigger user authorization request.
+        GoogleAuthorizationCodeFlow flow =
+                new GoogleAuthorizationCodeFlow.Builder(
+                        HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
+                        .setDataStoreFactory(DATA_STORE_FACTORY)
+                        .setAccessType("offline")
+                        .build();
+        Credential credential = new AuthorizationCodeInstalledApp(
+                flow, new LocalServerReceiver()).authorize("user");
+        System.out.println(
+                "Credentials saved to " + DATA_STORE_DIR.getAbsolutePath());
+        return credential;
+    }
 
 
     public static void update(String name, String email, String id) throws IOException, ServiceException, GeneralSecurityException {
@@ -85,7 +105,6 @@ public class UpdateSpreadsheet  {
         URL SPREADSHEET_FEED_URL = new URL("https://spreadsheets.google.com/feeds/worksheets/19UE63tTGZ9w5Tid00IFKwWwvxM0G8Zn2HFKjhqlFm6g/public/full");;
 
 
-        File p12 = new File("key.p12");
 
         KeyStore keystore = KeyStore.getInstance("PKCS12");
         InputStream keyFileStream = ClassLoader.getSystemResourceAsStream("key.p12");
@@ -115,24 +134,17 @@ public class UpdateSpreadsheet  {
             System.out.println("No spreadsheets found.");
         }
 
-        SpreadsheetEntry spreadsheet = null;
-        for (int i = 0; i < spreadsheets.size(); i++) {
-            if (spreadsheets.get(i).getTitle().getPlainText().startsWith("ListOfSandboxes")) {
-                spreadsheet = spreadsheets.get(i);
-                System.out.println("Name of editing spreadsheet: " + spreadsheets.get(i).getTitle().getPlainText());
-                System.out.println("ID of SpreadSheet: " + i);
-            }
-        }
 
 
 
-     
+
+
 
         // Update value
-        /*service.spreadsheets().values().batchUpdate(spreadsheetId,
+        service.spreadsheets().values().batchUpdate(spreadsheetId,
                 new BatchUpdateValuesRequest()
                         .setValueInputOption("RAW")
-                        .set("Name", "tuyen")).execute();*/
+                        .set("Name", "tuyen")).execute();
 
 
 
