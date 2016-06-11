@@ -12,6 +12,7 @@ import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
+import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.BatchUpdateValuesRequest;
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
@@ -97,9 +98,27 @@ public class UpdateSpreadsheet  {
     }
 
 
-    public static void update(String name, String email, String id) throws IOException, ServiceException, GeneralSecurityException {
+
+    /**
+     * Build and return an authorized Sheets API client service.
+     * @return an authorized Sheets API client service
+     * @throws IOException
+     */
+    public static Sheets getSheetsService() throws IOException {
+        Credential credential = authorize();
+        return new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+    }
 
 
+    /** Authorization for updating spreadsheet
+     * @return an authorized Sheets API client service
+     * @throws IOException
+     * @throws ServiceException
+     * @throws GeneralSecurityException
+     * **/
+    public static GoogleCredential authorizeForUpdateSheet() throws IOException, ServiceException, GeneralSecurityException {
 
         String p12Password = "notasecret";
         URL SPREADSHEET_FEED_URL = new URL("https://spreadsheets.google.com/feeds/worksheets/19UE63tTGZ9w5Tid00IFKwWwvxM0G8Zn2HFKjhqlFm6g/public/full");;
@@ -124,7 +143,7 @@ public class UpdateSpreadsheet  {
                 .setServiceAccountPrivateKey(key)
                 .build();
 
-        SpreadsheetService service = new SpreadsheetService("Test");
+        /*SpreadsheetService service = new SpreadsheetService("Test");
 
         service.setOAuth2Credentials(credential);
         SpreadsheetFeed feed = service.getFeed(SPREADSHEET_FEED_URL, SpreadsheetFeed.class);
@@ -132,27 +151,38 @@ public class UpdateSpreadsheet  {
 
         if (spreadsheets.size() == 0) {
             System.out.println("No spreadsheets found.");
-        }
+        }*/
+        return credential;
+    }
 
+    /** Get service for updating spreadsheet
+     * @return Sheets
+     * @throws ServiceException
+     * @throws GeneralSecurityException
+     * @throws IOException
+     * **/
+    public static Sheets updateSheetService() throws ServiceException, GeneralSecurityException, IOException {
+        Credential credential = authorizeForUpdateSheet();
 
+        return new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+    }
 
-
-
-
+    /** Update Spreadsheet **/
+    public static void updateSpreadsheet(String name, String id, String email) throws IOException, GeneralSecurityException, ServiceException {
+        Sheets service = updateSheetService();
 
         // Update value
-        service.spreadsheets().values().batchUpdate(spreadsheetId,
+        /*service.spreadsheets().values().batchUpdate(spreadsheetId,
                 new BatchUpdateValuesRequest()
                         .setValueInputOption("RAW")
-                        .set("Name", "tuyen")).execute();
-
-
-
+                        .set("Name", "tuyen")).execute();*/
     }
 
     public static void main(String[] argv) throws IOException, ServiceException, GeneralSecurityException {
 
-        UpdateSpreadsheet.update("lsdkfj","lsdkfj","foweijfw");
+
         /*
         List<Request> requests = new ArrayList<>();
         Sheets service = getSheetsService();
