@@ -124,7 +124,7 @@ public class UpdateSpreadsheet  {
      * @throws ServiceException
      * @throws GeneralSecurityException
      * **/
-    public static void authorizeForUpdateSheet() throws IOException, ServiceException, GeneralSecurityException {
+    public static Credential authorizeForUpdateSheet() throws IOException, ServiceException, GeneralSecurityException {
 
         String p12Password = "notasecret";
         URL SPREADSHEET_FEED_URL = new URL("https://spreadsheets.google.com/feeds/worksheets/" + SPREADSHEET_ID + "/public/full");
@@ -157,22 +157,9 @@ public class UpdateSpreadsheet  {
         SpreadsheetFeed feed = service.getFeed(SPREADSHEET_FEED_URL, SpreadsheetFeed.class);
         List<SpreadsheetEntry> spreadsheets = feed.getEntries();*/
 
-        SpreadsheetService service = new SpreadsheetService("Test");
-        service.setOAuth2Credentials(credential);
-
-        Sheets update = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
-               .setApplicationName(APPLICATION_NAME)
-               .build();
-
-        update.spreadsheets().values().batchUpdate(SPREADSHEET_ID,
-                new BatchUpdateValuesRequest()
-                        .setValueInputOption("RAW")
-                        .set("Last Name", "tuyen")).execute();
 
 
-        // Update
-
-
+        return credential;
     }
 
     /** Get service for updating spreadsheet
@@ -202,7 +189,19 @@ public class UpdateSpreadsheet  {
 
     public static void main(String[] argv) throws IOException, ServiceException, GeneralSecurityException {
 
-        UpdateSpreadsheet.authorizeForUpdateSheet();
+        Credential credential = authorizeForUpdateSheet();
+
+        SpreadsheetService service = new SpreadsheetService("Test");
+        service.setOAuth2Credentials(credential);
+
+        Sheets update = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+                .setApplicationName(APPLICATION_NAME)
+                .build();
+
+        update.spreadsheets().values().batchUpdate(SPREADSHEET_ID,
+                new BatchUpdateValuesRequest()
+                        .setValueInputOption("RAW")
+                        .set("Last Name", "tuyen")).execute();
 
         /*List<Request> requests = new ArrayList<>();
         Sheets service = getSheetsService();
