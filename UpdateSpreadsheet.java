@@ -14,10 +14,12 @@ import com.google.api.client.json.JsonFactory;
 import com.google.api.client.util.store.FileDataStoreFactory;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
-import com.google.api.services.sheets.v4.model.BatchUpdateValuesRequest;
+import com.google.api.services.sheets.v4.model.*;
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
+import com.google.gdata.data.spreadsheet.ListEntry;
 import com.google.gdata.data.spreadsheet.SpreadsheetEntry;
 import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
+import com.google.gdata.data.spreadsheet.WorksheetEntry;
 import com.google.gdata.util.ServiceException;
 
 
@@ -28,6 +30,7 @@ import java.net.URL;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
 import java.security.PrivateKey;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,6 +41,9 @@ public class UpdateSpreadsheet  {
     /** Application name. */
     private static final String APPLICATION_NAME =
             "Google Sheets API Java Quickstart";
+
+    /** SpreadSheet ID */
+    private  static final String SPREADSHEET_ID = "19UE63tTGZ9w5Tid00IFKwWwvxM0G8Zn2HFKjhqlFm6g";
 
     /** Directory to store user credentials for this application. */
     private static final java.io.File DATA_STORE_DIR = new java.io.File(
@@ -118,10 +124,10 @@ public class UpdateSpreadsheet  {
      * @throws ServiceException
      * @throws GeneralSecurityException
      * **/
-    public static GoogleCredential authorizeForUpdateSheet() throws IOException, ServiceException, GeneralSecurityException {
+    public static void authorizeForUpdateSheet() throws IOException, ServiceException, GeneralSecurityException {
 
         String p12Password = "notasecret";
-        URL SPREADSHEET_FEED_URL = new URL("https://spreadsheets.google.com/feeds/worksheets/19UE63tTGZ9w5Tid00IFKwWwvxM0G8Zn2HFKjhqlFm6g/public/full");;
+        URL SPREADSHEET_FEED_URL = new URL("https://spreadsheets.google.com/feeds/worksheets/" + SPREADSHEET_ID + "/public/full");
 
 
 
@@ -138,21 +144,35 @@ public class UpdateSpreadsheet  {
         GoogleCredential credential = new GoogleCredential.Builder()
                 .setTransport(httpTransport)
                 .setJsonFactory(jsonFactory)
-                .setServiceAccountId("532786746523-n7r8fv173dc96kfmlo59bfd8cn5mmh0c.apps.googleusercontent.com")
+                .setServiceAccountId("hallowed-trail-133723@appspot.gserviceaccount.com")
                 .setServiceAccountScopes(SCOPES)
                 .setServiceAccountPrivateKey(key)
                 .build();
 
+
+        // Build Spreadsheet
         /*SpreadsheetService service = new SpreadsheetService("Test");
 
         service.setOAuth2Credentials(credential);
         SpreadsheetFeed feed = service.getFeed(SPREADSHEET_FEED_URL, SpreadsheetFeed.class);
-        List<SpreadsheetEntry> spreadsheets = feed.getEntries();
+        List<SpreadsheetEntry> spreadsheets = feed.getEntries();*/
 
-        if (spreadsheets.size() == 0) {
-            System.out.println("No spreadsheets found.");
-        }*/
-        return credential;
+        SpreadsheetService service = new SpreadsheetService("Test");
+        service.setOAuth2Credentials(credential);
+
+        Sheets update = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+               .setApplicationName(APPLICATION_NAME)
+               .build();
+
+        update.spreadsheets().values().batchUpdate(SPREADSHEET_ID,
+                new BatchUpdateValuesRequest()
+                        .setValueInputOption("RAW")
+                        .set("Last Name", "tuyen")).execute();
+
+
+        // Update
+
+
     }
 
     /** Get service for updating spreadsheet
@@ -161,32 +181,32 @@ public class UpdateSpreadsheet  {
      * @throws GeneralSecurityException
      * @throws IOException
      * **/
-    public static Sheets updateSheetService() throws ServiceException, GeneralSecurityException, IOException {
+   /* public static Sheets updateSheetService() throws ServiceException, GeneralSecurityException, IOException {
         Credential credential = authorizeForUpdateSheet();
 
         return new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
-    }
+    }*/
 
     /** Update Spreadsheet **/
-    public static void updateSpreadsheet(String name, String id, String email) throws IOException, GeneralSecurityException, ServiceException {
+    /*public static void updateSpreadsheet(String name, String id, String email) throws IOException, GeneralSecurityException, ServiceException {
         Sheets service = updateSheetService();
 
         // Update value
-        /*service.spreadsheets().values().batchUpdate(spreadsheetId,
+        service.spreadsheets().values().batchUpdate(SPREADSHEET_ID,
                 new BatchUpdateValuesRequest()
                         .setValueInputOption("RAW")
-                        .set("Name", "tuyen")).execute();*/
-    }
+                        .set("Name", "tuyen")).execute();
+    }*/
 
     public static void main(String[] argv) throws IOException, ServiceException, GeneralSecurityException {
 
+        UpdateSpreadsheet.authorizeForUpdateSheet();
 
-        /*
-        List<Request> requests = new ArrayList<>();
+        /*List<Request> requests = new ArrayList<>();
         Sheets service = getSheetsService();
-        String spreadsheetId = "19UE63tTGZ9w5Tid00IFKwWwvxM0G8Zn2HFKjhqlFm6g";
+        String spreadsheetId = SPREADSHEET_ID;
         requests.add(new Request()
                 .setCopyPaste(new CopyPasteRequest()
                         .setSource(new GridRange()
@@ -203,10 +223,12 @@ public class UpdateSpreadsheet  {
                                 .setEndColumnIndex(3))
                         .setPasteType("PASTE_FORMAT")));
 
+
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
                 .setRequests(requests);
         service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest)
-                .execute();*/
+                .execute();
+                */
     }
 
 
