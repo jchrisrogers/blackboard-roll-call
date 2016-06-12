@@ -28,6 +28,7 @@ import java.security.KeyStore;
 import java.security.PrivateKey;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /** Update empty sheet **/
@@ -61,7 +62,7 @@ public class UpdateSpreadsheet  {
      * at ~/.credentials/sheets.googleapis.com-java-quickstart.json
      */
     private static final List<String> SCOPES =
-            Arrays.asList(SheetsScopes.SPREADSHEETS_READONLY);
+            Collections.singletonList(SheetsScopes.SPREADSHEETS_READONLY);
 
     static {
         try {
@@ -78,7 +79,7 @@ public class UpdateSpreadsheet  {
      * @return an authorized Credential object.
      * @throws IOException
      */
-    public static Credential authorize() throws IOException {
+    private static Credential authorize() throws IOException {
         // Load client secrets.
         InputStream in =
                 SheetsQuickstart.class.getResourceAsStream("/client_secret.json");
@@ -106,7 +107,8 @@ public class UpdateSpreadsheet  {
      * @return an authorized Sheets API client service
      * @throws IOException
      */
-    public static Sheets getSheetsService() throws IOException {
+
+    private static Sheets getSheetsService() throws IOException {
         Credential credential = authorize();
         return new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
@@ -120,7 +122,7 @@ public class UpdateSpreadsheet  {
      * @throws ServiceException
      * @throws GeneralSecurityException
      * **/
-    public static Credential authorizeForUpdateSheet() throws IOException, ServiceException, GeneralSecurityException {
+    private static Credential authorizeForUpdateSheet() throws IOException, ServiceException, GeneralSecurityException {
 
         String p12Password = "notasecret";
         URL SPREADSHEET_FEED_URL = new URL("https://spreadsheets.google.com/feeds/worksheets/" + SPREADSHEET_ID + "/public/full");
@@ -137,14 +139,6 @@ public class UpdateSpreadsheet  {
         JacksonFactory jsonFactory = new JacksonFactory();
         String[] SCOPESArray = {"https://spreadsheets.google.com/feeds", "https://spreadsheets.google.com/feeds/spreadsheets/private/full", "https://docs.google.com/feeds"};
         final List SCOPES = Arrays.asList(SCOPESArray);
-        GoogleCredential credential = new GoogleCredential.Builder()
-                .setTransport(httpTransport)
-                .setJsonFactory(jsonFactory)
-                .setServiceAccountId("hallowed-trail-133723@appspot.gserviceaccount.com")
-                .setServiceAccountScopes(SCOPES)
-                .setServiceAccountPrivateKey(key)
-                .build();
-
 
         // Build Spreadsheet
         /*SpreadsheetService service = new SpreadsheetService("Test");
@@ -153,9 +147,14 @@ public class UpdateSpreadsheet  {
         SpreadsheetFeed feed = service.getFeed(SPREADSHEET_FEED_URL, SpreadsheetFeed.class);
         List<SpreadsheetEntry> spreadsheets = feed.getEntries();*/
 
+        return new GoogleCredential.Builder()
+                .setTransport(httpTransport)
+                .setJsonFactory(jsonFactory)
+                .setServiceAccountId("hallowed-trail-133723@appspot.gserviceaccount.com")
+                .setServiceAccountScopes(SCOPES)
+                .setServiceAccountPrivateKey(key)
+                .build();
 
-
-        return credential;
     }
 
     /** Get service for updating spreadsheet
@@ -164,7 +163,7 @@ public class UpdateSpreadsheet  {
      * @throws GeneralSecurityException
      * @throws IOException
      * **/
-    public static Sheets updateSheetService() throws ServiceException, GeneralSecurityException, IOException {
+    private static Sheets updateSheetService() throws ServiceException, GeneralSecurityException, IOException {
         Credential credential = authorizeForUpdateSheet();
         SpreadsheetService service = new SpreadsheetService("Test");
         service.setOAuth2Credentials(credential);
