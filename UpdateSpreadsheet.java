@@ -16,10 +16,6 @@ import com.google.api.services.sheets.v4.Sheets;
 import com.google.api.services.sheets.v4.SheetsScopes;
 import com.google.api.services.sheets.v4.model.*;
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
-import com.google.gdata.data.spreadsheet.ListEntry;
-import com.google.gdata.data.spreadsheet.SpreadsheetEntry;
-import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
-import com.google.gdata.data.spreadsheet.WorksheetEntry;
 import com.google.gdata.util.ServiceException;
 
 
@@ -43,7 +39,7 @@ public class UpdateSpreadsheet  {
             "Google Sheets API Java Quickstart";
 
     /** SpreadSheet ID */
-    private  static final String SPREADSHEET_ID = "19UE63tTGZ9w5Tid00IFKwWwvxM0G8Zn2HFKjhqlFm6g";
+    private  static final String SPREADSHEET_ID = "1IX_9DMEecQAK9_1_EYA4Gs0JfeOBSwww0vSLu2Xq3NY";
 
     /** Directory to store user credentials for this application. */
     private static final java.io.File DATA_STORE_DIR = new java.io.File(
@@ -168,13 +164,15 @@ public class UpdateSpreadsheet  {
      * @throws GeneralSecurityException
      * @throws IOException
      * **/
-   /* public static Sheets updateSheetService() throws ServiceException, GeneralSecurityException, IOException {
+    public static Sheets updateSheetService() throws ServiceException, GeneralSecurityException, IOException {
         Credential credential = authorizeForUpdateSheet();
+        SpreadsheetService service = new SpreadsheetService("Test");
+        service.setOAuth2Credentials(credential);
 
         return new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)
                 .build();
-    }*/
+    }
 
     /** Update Spreadsheet **/
     /*public static void updateSpreadsheet(String name, String id, String email) throws IOException, GeneralSecurityException, ServiceException {
@@ -188,23 +186,14 @@ public class UpdateSpreadsheet  {
     }*/
 
     public static void main(String[] argv) throws IOException, ServiceException, GeneralSecurityException {
-
-        Credential credential = authorizeForUpdateSheet();
-
-        SpreadsheetService service = new SpreadsheetService("Test");
-        service.setOAuth2Credentials(credential);
-
-        Sheets update = new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
-                .setApplicationName(APPLICATION_NAME)
-                .build();
-
-        update.spreadsheets().values().batchUpdate(SPREADSHEET_ID,
+        /*Sheets service = updateSheetService();
+       service.spreadsheets().values().batchUpdate(SPREADSHEET_ID,
                 new BatchUpdateValuesRequest()
-                        .setValueInputOption("RAW")
-                        .set("Last Name", "tuyen")).execute();
+                        .setValueInputOption("RAW").setData()*/
 
-        /*List<Request> requests = new ArrayList<>();
-        Sheets service = getSheetsService();
+
+        List<Request> requests = new ArrayList<>();
+        Sheets service = updateSheetService();
         String spreadsheetId = SPREADSHEET_ID;
         requests.add(new Request()
                 .setCopyPaste(new CopyPasteRequest()
@@ -223,11 +212,13 @@ public class UpdateSpreadsheet  {
                         .setPasteType("PASTE_FORMAT")));
 
 
+
+
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
                 .setRequests(requests);
         service.spreadsheets().batchUpdate(spreadsheetId, batchUpdateRequest)
                 .execute();
-                */
+
     }
 
 
