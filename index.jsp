@@ -7,7 +7,6 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="mypackage.UpdateSpreadsheet" %>
-<%@ page import="mypackage.SheetsQuickstart" %>
 
 <html>
 <head>
@@ -20,6 +19,6 @@
         String id = request.getParameter("id");
         String email = request.getParameter("email");
 
-        UpdateSpreadsheet.update(name, id, email);
+        UpdateSpreadsheet.updateSheet(name, id, email);
     %>
 </body>
