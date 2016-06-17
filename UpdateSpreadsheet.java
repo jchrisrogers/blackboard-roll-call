@@ -259,8 +259,8 @@ public class UpdateSpreadsheet {
 
         // Check if student ID and the name input from user is valid. ID will be checked first then user's name
         if (isIDValid(id) && correctNameFormat(name)) {
-            firstName = name.split("\\s")[0];
             lastName = name.split("\\s")[1];
+            firstName = name.split("\\s")[0];
 
             // Store into List object
             List<List<Object>> valueRangeList = getValueRange().getValues();
@@ -273,7 +273,7 @@ public class UpdateSpreadsheet {
                 }
             }
         }
-        
+
         return validInput;
     }
 
@@ -307,7 +307,7 @@ public class UpdateSpreadsheet {
 
         // Look for valid ID
         for (List list : valueRangeList) {
-            if (list.get(3) == id) {
+            if (list.get(3).equals(id)) {
                 return true;
             }
         }
@@ -331,7 +331,7 @@ public class UpdateSpreadsheet {
 
     public static void main(String[] args) throws IOException, ServiceException {
 
-
+        updateSheet("Tuyen Le", "218694867", "tuyen_le92@rocketmail.com");
 
     }
 
