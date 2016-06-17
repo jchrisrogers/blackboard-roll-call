@@ -259,6 +259,8 @@ public class UpdateSpreadsheet {
 
         // Check if student ID and the name input from user is valid. ID will be checked first then user's name
         if (isIDValid(id) && correctNameFormat(name)) {
+            
+            // Split name into first and last name
             lastName = name.split("\\s")[1];
             firstName = name.split("\\s")[0];
 
@@ -331,7 +333,7 @@ public class UpdateSpreadsheet {
 
     public static void main(String[] args) throws IOException, ServiceException {
 
-        updateSheet("Tuyen Le", "218694867", "tuyen_le92@rocketmail.com");
+        updateSheet("Tuyen Le", "218694867", "tuyen_le92@rocketmail.com"); 
 
     }
 
