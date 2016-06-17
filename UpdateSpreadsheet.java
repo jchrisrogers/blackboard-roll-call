@@ -175,8 +175,12 @@ public class UpdateSpreadsheet {
      * @throws IOException
      * @throws ServiceException
      */
-    public static void updateSheet(String name, String id, String email) throws IOException, ServiceException {
-
+    public static boolean updateSheet(String name, String id, String email) throws IOException, ServiceException {
+        
+        boolean validInput = false;
+        
+        
+        // Check for user input. Make sure user input first and last name with their correct ID number
         if (isInputValid(name, id)) {
             // Get total row so the function will add new information below the current row
             ROW = totalRow();
@@ -233,12 +237,15 @@ public class UpdateSpreadsheet {
                     .setRequests(requests);
             service.spreadsheets().batchUpdate(SPREAD_SHEET_ID, batchUpdateRequest)
                     .execute();
+            
+            // Reset to true if user input is correct. Otherwise false
+            validInput = true;
         }
         else {
             System.out.println("Input is invalid. Make sure to enter " +
                     "first and last name with correct student ID");    // Let user know id or name can't be found. Input is invalid
         }
-
+        return validInput;
     }
 
 
@@ -331,7 +338,7 @@ public class UpdateSpreadsheet {
         return  service.spreadsheets().values().get(SPREAD_SHEET_ID, range).execute();
     }
 
-    
+
     /** Main */
     public static void main(String[] args) throws IOException, ServiceException {
 
