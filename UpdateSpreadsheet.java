@@ -16,11 +16,9 @@ import com.google.api.services.sheets.v4.model.*;
 import com.google.api.services.sheets.v4.Sheets;
 import com.google.gdata.client.spreadsheet.SpreadsheetService;
 import com.google.gdata.data.dublincore.Date;
-import com.google.gdata.data.spreadsheet.SpreadsheetEntry;
-import com.google.gdata.data.spreadsheet.SpreadsheetFeed;
-import com.google.gdata.data.spreadsheet.Worksheet;
-import com.google.gdata.data.spreadsheet.WorksheetEntry;
+import com.google.gdata.data.spreadsheet.*;
 import com.google.gdata.util.ServiceException;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -143,7 +141,7 @@ public class UpdateSpreadsheet {
      */
 
     public static int totalRow()
-            throws MalformedURLException, ServiceException, IOException {
+            throws ServiceException, IOException {
 
         // Get spreadsheet service
         SpreadsheetService service = new SpreadsheetService("Attendance");
@@ -163,15 +161,8 @@ public class UpdateSpreadsheet {
         List<WorksheetEntry> worksheetEntry = sheetEntry.getWorksheets();
 
         // Count how many row already exist in the spread sheet
-        int row = 0;
 
-        for (WorksheetEntry worksheet : worksheetEntry) {
-            if (worksheet.getRowCount() == 0) {
-                row++;                              // count how many row in the spreadsheet
-            }
-        }
-
-        return row;
+        return worksheetEntry.size();
 
     }
 
@@ -186,68 +177,161 @@ public class UpdateSpreadsheet {
      */
     public static void updateSheet(String name, String id, String email) throws IOException, ServiceException {
 
-        // Get total row so the function will add new information below the current row
-        ROW = totalRow();
+        if (isInputValid(name, id)) {
+            // Get total row so the function will add new information below the current row
+            ROW = totalRow();
 
 
-        // Build a new authorized API client service.
+            // Build a new authorized API client service.
+            Sheets service = getSheetsService();
+
+            SpreadsheetService spreadsheetService = new SpreadsheetService("Attendance");
+
+
+            // Prints the names and majors of students in a sample spreadsheet:
+            // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
+
+            List<Request> requests = new ArrayList<>();
+
+            // Change the name of sheet ID '0' (the default first sheet on every spreadsheet
+            requests.add(new Request()
+                    .setUpdateSheetProperties(new UpdateSheetPropertiesRequest()
+                            .setProperties(new SheetProperties()
+                                    .setSheetId(0)
+                                    .setTitle("Attandance"))
+                            .setFields("title")));
+
+
+            // update spreadsheet by appending the new information below the current row
+            List<CellData> values = new ArrayList<>();
+
+            // Add Name, ID and Email in a horizontal position
+            values.add(new CellData()
+                    .setUserEnteredValue(new ExtendedValue()
+                            .setStringValue(new java.util.Date().toString())));
+            values.add(new CellData()
+                    .setUserEnteredValue(new ExtendedValue()
+                            .setStringValue(name)));
+            values.add(new CellData()
+                    .setUserEnteredValue(new ExtendedValue()
+                            .setStringValue(id)));
+            values.add(new CellData()
+                    .setUserEnteredValue(new ExtendedValue()
+                            .setStringValue(email)));
+            requests.add(new Request()
+                    .setUpdateCells(new UpdateCellsRequest()
+                            .setStart(new GridCoordinate()
+                                    .setSheetId(0)
+                                    .setRowIndex(++ROW)
+                                    .setColumnIndex(0))
+                            .setRows(Arrays.asList(
+                                    new RowData().setValues(values)))
+                            .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+
+            // Final call to publish the updated sheet to google drive
+            BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
+                    .setRequests(requests);
+            service.spreadsheets().batchUpdate(SPREAD_SHEET_ID, batchUpdateRequest)
+                    .execute();
+        }
+        else {
+            System.out.println("Input is invalid. Make sure to enter " +
+                    "first and last name with correct student ID");    // Let user know id or name can't be found. Input is invalid
+        }
+
+    }
+
+
+    /**
+     * Check if student ID and Name is valid to
+     * prevent fraud and improve security
+     * @throws IOException
+     * @throws ServiceException
+     */
+    static boolean isInputValid (String name, String id)
+            throws ServiceException, IOException {
+
+        // Declare first and last name
+        boolean validInput = false;           // default value. Assume user input only is valid for name and id. Otherwise true
+        String firstName;
+        String lastName;
+
+
+        // Check if student ID and the name input from user is valid. ID will be checked first then user's name
+        if (isIDValid(id) && correctNameFormat(name)) {
+            firstName = name.split("\\s")[0];
+            lastName = name.split("\\s")[1];
+
+            // Store into List object
+            List<List<Object>> valueRangeList = getValueRange().getValues();
+
+            // Look for valid name
+            for (List list : valueRangeList) {
+                if (list.get(0).equals(lastName) && list.get(1).equals(firstName)) {
+                    validInput  = true;
+                    break;
+                }
+            }
+        }
+        
+        return validInput;
+    }
+
+    /**
+     * Check if user enter first and
+     * last name. Otherwise prompt
+     * user to input again
+     * @throws IOException
+     * @throws ServiceException
+     */
+
+    static boolean correctNameFormat(String name)
+            throws IOException, ServiceException {
+
+        return name.split("\\s").length == 2;
+    }
+
+
+    /**
+     * Check for ID if it matches
+     * with the student ID and the user input
+     * @throws IOException
+     * @throws ServiceException
+     */
+
+    static boolean isIDValid(String id) throws IOException, ServiceException {
+
+
+        // Store into List object
+        List<List<Object>> valueRangeList = getValueRange().getValues();
+
+        // Look for valid ID
+        for (List list : valueRangeList) {
+            if (list.get(3) == id) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Get range of spreadsheet
+     * @throws IOException
+     */
+    static ValueRange getValueRange() throws IOException{
+        // Get spreadsheet service
         Sheets service = getSheetsService();
 
-        SpreadsheetService spreadsheetService = new SpreadsheetService("Attendance");
+        String range = "Form Responses 1!A2:D";
 
-
-        // Prints the names and majors of students in a sample spreadsheet:
-        // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-
-        List<Request> requests = new ArrayList<>();
-
-        // Change the name of sheet ID '0' (the default first sheet on every spreadsheet
-        requests.add(new Request()
-                .setUpdateSheetProperties(new UpdateSheetPropertiesRequest()
-                        .setProperties(new SheetProperties()
-                                .setSheetId(0)
-                                .setTitle("Attandance"))
-                        .setFields("title")));
-
-
-
-        // update spreadsheet by appending the new information below the current row
-        List<CellData> values = new ArrayList<>();
-
-        // Add Name, ID and Email in a horizontal position
-        values.add(new CellData()
-                .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue(new java.util.Date().toString())));
-        values.add(new CellData()
-                .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue(name)));
-        values.add(new CellData()
-                .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue(id)));
-        values.add(new CellData()
-                .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue(email)));
-        requests.add(new Request()
-                .setUpdateCells(new UpdateCellsRequest()
-                        .setStart(new GridCoordinate()
-                                .setSheetId(0)
-                                .setRowIndex(++ROW)
-                                .setColumnIndex(0))
-                        .setRows(Arrays.asList(
-                                new RowData().setValues(values)))
-                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
-
-        // Final call to publish the updated sheet to google drive
-        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
-                .setRequests(requests);
-        service.spreadsheets().batchUpdate(SPREAD_SHEET_ID, batchUpdateRequest)
-                .execute();
-
+        // Get range
+        return  service.spreadsheets().values().get(SPREAD_SHEET_ID, range).execute();
     }
 
     public static void main(String[] args) throws IOException, ServiceException {
 
-        updateSheet("Tuyen", "3432432", "tuyen_le92@rocketmail.com");   // TEsting
+
 
     }
 
