@@ -186,8 +186,9 @@ public class UpdateSpreadsheet {
      */
     public static void updateSheet(String name, String id, String email) throws IOException, ServiceException {
 
-        // Get total row
+        // Get total row so the function will add new information below the current row
         ROW = totalRow();
+
 
         // Build a new authorized API client service.
         Sheets service = getSheetsService();
@@ -210,13 +211,13 @@ public class UpdateSpreadsheet {
 
 
 
-
         // update spreadsheet by appending the new information below the current row
         List<CellData> values = new ArrayList<>();
 
+        // Add Name, ID and Email in a horizontal position
         values.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue(new Date().toString())));
+                        .setStringValue(new java.util.Date().toString())));
         values.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
                         .setStringValue(name)));
@@ -246,8 +247,7 @@ public class UpdateSpreadsheet {
 
     public static void main(String[] args) throws IOException, ServiceException {
 
-
-        updateSheet("Tuyen", "32423432", "tuyen_le92@rocketmail.com");  // Testing
+        updateSheet("Tuyen", "3432432", "tuyen_le92@rocketmail.com");
 
     }
 
