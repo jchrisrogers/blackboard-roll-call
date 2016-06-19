@@ -38,12 +38,6 @@ public class UpdateSpreadsheet {
 
 
     /**
-     * Current active row (last row) of the spreadsheet
-     */
-    private static int ROW;
-
-
-    /**
      * Application name.
      */
     private static final String APPLICATION_NAME =
@@ -176,16 +170,13 @@ public class UpdateSpreadsheet {
      * @throws ServiceException
      */
     public static boolean updateSheet(String name, String id, String email) throws IOException, ServiceException {
-        
+
         boolean validInput = false;
-        
-        
+
+
         // Check for user input. Make sure user input first and last name with their correct ID number
         if (isInputValid(name, id)) {
-            // Get total row so the function will add new information below the current row
-            ROW = totalRow();
-
-
+            
             // Build a new authorized API client service.
             Sheets service = getSheetsService();
 
@@ -226,7 +217,7 @@ public class UpdateSpreadsheet {
                     .setUpdateCells(new UpdateCellsRequest()
                             .setStart(new GridCoordinate()
                                     .setSheetId(0)
-                                    .setRowIndex(++ROW)
+                                    .setRowIndex(totalRow() + 1)
                                     .setColumnIndex(0))
                             .setRows(Arrays.asList(
                                     new RowData().setValues(values)))
@@ -237,7 +228,7 @@ public class UpdateSpreadsheet {
                     .setRequests(requests);
             service.spreadsheets().batchUpdate(SPREAD_SHEET_ID, batchUpdateRequest)
                     .execute();
-            
+
             // Reset to true if user input is correct. Otherwise false
             validInput = true;
         }
