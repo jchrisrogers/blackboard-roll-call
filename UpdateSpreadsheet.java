@@ -21,12 +21,14 @@ public class UpdateSpreadsheet extends Authorization {
 
     /**
      * Constructor to update the
-     * current column in the spreadsheet
+     * current column, row and
+     * date in the spreadsheet
      */
     UpdateSpreadsheet()
             throws IOException, ServiceException, URISyntaxException {
         CURRENT_COLUMN = totalCol();
         ROW = totalRow();
+        CURRENT_DATE = new java.util.Date().toString();
     }
 
 
@@ -59,7 +61,7 @@ public class UpdateSpreadsheet extends Authorization {
     /**
      * Current Date
      */
-    private static final String currentDate = new java.util.Date().toString();
+    private static String CURRENT_DATE = null;
 
 
     /**
@@ -267,7 +269,7 @@ public class UpdateSpreadsheet extends Authorization {
         // Add new header
         values.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue(new java.util.Date().toString())));
+                        .setStringValue(CURRENT_DATE)));
         requests.add(new Request()
                 .setUpdateCells(new UpdateCellsRequest()
                         .setStart(new GridCoordinate()
@@ -442,7 +444,7 @@ public class UpdateSpreadsheet extends Authorization {
     public static void main(String[] args) throws IOException, ServiceException, URISyntaxException {
 
         new UpdateSpreadsheet();
-        updateSheet("Tuyen Le", "218694867", "tuyen_le92@rocketmail.com");
+        updateSheet("Dallas Berry", "218676836", "tuyen_le92@rocketmail.com");
 
     }
 
