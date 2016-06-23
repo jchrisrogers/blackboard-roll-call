@@ -204,7 +204,7 @@ public class UpdateSpreadsheet extends Authorization {
                     .setUpdateCells(new UpdateCellsRequest()
                             .setStart(new GridCoordinate()
                                     .setSheetId(0)
-                                    .setRowIndex(insertRow)
+                                    .setRowIndex(insertRow+1)
                                     .setColumnIndex(insertColumn))
                             .setRows(Arrays.asList(
                                     new RowData().setValues(values)))
@@ -442,7 +442,7 @@ public class UpdateSpreadsheet extends Authorization {
     public static void main(String[] args) throws IOException, ServiceException, URISyntaxException {
 
         new UpdateSpreadsheet();
-        updateSheet("Anthony Luna", "212712657", "tuyen_le92@rocketmail.com");
+        updateSheet("Tuyen Le", "218694867", "tuyen_le92@rocketmail.com");
 
     }
 
