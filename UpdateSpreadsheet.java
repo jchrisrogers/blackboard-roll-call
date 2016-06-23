@@ -48,11 +48,6 @@ public class UpdateSpreadsheet extends Authorization {
 
 
     /**
-     * Row filled
-     */
-    private static int ROW_FILLED;
-
-    /**
      * Return the number of row in
      * the spreadsheet to append
      * a new input from user to a
@@ -180,27 +175,20 @@ public class UpdateSpreadsheet extends Authorization {
         int insertRow;
 
 
+
         // Check for user input. Make sure user input first and last name with their correct ID number
         // Make sure to insert to newColumn only. If all cells are fill then totalCol() == newColumn()
-        if ((insertRow = isInputValid(name, id, row)) < row && insertRow >= 0 && ROW_FILLED < row) {
+        if ((insertRow = isInputValid(name, id, row)) < row && insertRow >= 0) {
 
-            System.out.println();
-
-            // Keep track of how many row has been filled already
-            ROW_FILLED++;
 
             // Build a new authorized API client service.
             Sheets service = getSheetsService();
 
-            SpreadsheetService spreadsheetService = new SpreadsheetService("Attendance");
 
-            System.out.println(ROW_FILLED);
-            // Prints the names and majors of students in a sample spreadsheet:
-            // https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit
-
+            // Define requests for google API to update the spreadsheet
             List<Request> requests = new ArrayList<>();
 
-            // Change the name of sheet ID '0' (the default first sheet on every spreadsheet
+            // Call to google API for request and update
             requests.add(new Request()
                     .setUpdateSheetProperties(new UpdateSheetPropertiesRequest()
                             .setProperties(new SheetProperties()
@@ -235,17 +223,14 @@ public class UpdateSpreadsheet extends Authorization {
             // Reset to true if user input is correct. Otherwise false
             validInput = true;
         }
-        else if (ROW_FILLED == row) {
-            ROW_FILLED = 0;
-        }
         else if (insertRow == INVALID_ID) {
-            System.out.println("Student ID can't be found");
+            System.out.println("Student ID can't be found");    // error handling
         }
         else if (insertRow == ID_Not_Match_With_Name){
-            System.out.println("Student ID does not match with student's first and last name");
+            System.out.println("Student ID does not match with student's first and last name"); // error handling
         }
         else if (insertRow == INCORRECT_NAME_FORMAT) {
-            System.out.println("Name can't be found or is not in a correct format");
+            System.out.println("Name can't be found or is not in a correct format");    // error handling
         }
 
 
@@ -254,7 +239,54 @@ public class UpdateSpreadsheet extends Authorization {
     }
 
 
-    public static void insertHeader() {
+    /**
+     * Insert header name
+     * to Spreadsheet
+     * @throws IOException
+     * @throws ServiceException
+     */
+
+    public static void insertHeader()
+    throws IOException, ServiceException {
+
+        // Build a new authorized API client service.
+        Sheets service = getSheetsService();
+
+
+        // Define requests for google API to update the spreadsheet
+        List<Request> requests = new ArrayList<>();
+
+        // Call to google API for request and update
+        requests.add(new Request()
+                .setUpdateSheetProperties(new UpdateSheetPropertiesRequest()
+                        .setProperties(new SheetProperties()
+                                .setSheetId(0)
+                                .setTitle("Attendance"))
+                        .setFields("title")));
+
+
+        // Update spreadsheet by appending the new information below the current row
+        List<CellData> values = new ArrayList<>();
+
+        // Add new header
+        values.add(new CellData()
+                .setUserEnteredValue(new ExtendedValue()
+                        .setStringValue(new java.util.Date().toString())));
+        requests.add(new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(0)
+                                .setRowIndex(0)
+                                .setColumnIndex(totalCol()))
+                        .setRows(Arrays.asList(
+                                new RowData().setValues(values)))
+                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+
+        // Final call to publish the updated sheet to google drive
+        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
+                .setRequests(requests);
+        service.spreadsheets().batchUpdate(getSpreadsheetID(), batchUpdateRequest)
+                .execute();
 
     }
 
@@ -300,13 +332,13 @@ public class UpdateSpreadsheet extends Authorization {
                     (validName = valueRangeList.get(index).toArray()[1].equals(firstName))) {
             }
             else if (index > row) {
-                index = INVALID_ID;
+                index = INVALID_ID; // error for invalid ID
             }
             else if (!validName) {
-                index = ID_Not_Match_With_Name;
+                index = ID_Not_Match_With_Name; // error for invalid name
             }
         }catch(ArrayIndexOutOfBoundsException e) {
-            index = INCORRECT_NAME_FORMAT;
+            index = INCORRECT_NAME_FORMAT;      // error for incorrect name format
         }
 
 
@@ -361,7 +393,7 @@ public class UpdateSpreadsheet extends Authorization {
     /** Main */
     public static void main(String[] args) throws IOException, ServiceException, URISyntaxException {
 
-       //updateSheet("Sason Baghdadi", "216722988", "tuyen_le92@rocketmail.com");
+        updateSheet("Tuyen Le", "2186948643345347", "tuyen_le92@rocketmail.com");
 
         System.out.println(totalCol());
     }
