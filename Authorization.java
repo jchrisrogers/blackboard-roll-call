@@ -24,7 +24,7 @@ public class Authorization {
     /**
      * Id of spreadsheet
      **/
-    private static String SPREAD_SHEET_ID = "19UE63tTGZ9w5Tid00IFKwWwvxM0G8Zn2HFKjhqlFm6g";
+    private static String SPREAD_SHEET_ID = "1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg";
 
 
     /**
@@ -82,7 +82,7 @@ public class Authorization {
      */
     public static Credential authorize() throws IOException {
         // Load client secrets.
-        InputStream in = new FileInputStream("/home/tuyen/IdeaProjects/application/src/main/resources/client_secret.json");
+        InputStream in = new FileInputStream("/Users/TinTin/IdeaProjects/AttendanceService/src/main/resources/client_secret.json");
         // SheetsQuickstart.class.getResourceAsStream("/client_secret.json");
         GoogleClientSecrets clientSecrets =
                 GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
