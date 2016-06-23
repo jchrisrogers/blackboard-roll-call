@@ -10,15 +10,14 @@
 
 <html>
 <head>
-    <title>Sign In Form</title>
+  <title>Sign In Form</title>
 </head>
 <body>
-    <!--Get name, email and id when student submit his/her name from signin.html form--%>
+<!--Get name, email and id when student submit his/her name from signin.html form--%>
     <%
         String name = request.getParameter("name");
         String id = request.getParameter("id");
         String email = request.getParameter("email");
-
         UpdateSpreadsheet.updateSheet(name, id, email);
     %>
 </body>
