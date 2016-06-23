@@ -18,6 +18,18 @@ import java.util.List;
 
 
 public class UpdateSpreadsheet extends Authorization {
+
+    /**
+     * Constructor to update the
+     * current column in the spreadsheet
+     */
+    UpdateSpreadsheet()
+            throws IOException, ServiceException, URISyntaxException {
+        CURRENT_COLUMN = totalCol();
+        ROW = totalRow();
+    }
+
+
     /**
      * Pre-defined error value
      * -1 indicates invalid id
@@ -31,10 +43,13 @@ public class UpdateSpreadsheet extends Authorization {
 
     /**
      * Keep track of how many
-     * row has been filled already
+     * row and column. Row will be constant
+     * throughout. However, column will
+     * change overtime since we are adding
+     * data in a horizontal position.
      */
-    private static int currentRow;
-
+    private static int CURRENT_COLUMN;
+    private static int ROW;
 
     /**
      * URL link
@@ -93,7 +108,7 @@ public class UpdateSpreadsheet extends Authorization {
      * @throws IOException
      */
     private static int totalCol()
-        throws ServiceException, IOException {
+            throws ServiceException, IOException {
 
         /// Get spreadsheet service
         SpreadsheetService service = new SpreadsheetService("Attendance");
@@ -123,40 +138,7 @@ public class UpdateSpreadsheet extends Authorization {
     }
 
 
-    /**
-     * Get a specific cell value
-     * within a row and col from the
-     * spreadsheet. Return the
-     * value within the cell if exist,
-     * Otherwise return Null
-     */
-    private static void getCellValue()
-            throws IOException, ServiceException, URISyntaxException {
-        SpreadsheetService spreadsheetService = new SpreadsheetService("Attendance");
 
-        URL urlSpreadsheet = new URL(URL_FEED);
-        SpreadsheetFeed spreadsheetFeed = spreadsheetService.getFeed(urlSpreadsheet, SpreadsheetFeed.class);
-        SpreadsheetEntry spreadsheetEntry = spreadsheetFeed.getEntries().get(0);
-
-        WorksheetFeed worksheetFeed = spreadsheetService.getFeed(spreadsheetEntry.getWorksheetFeedUrl(), WorksheetFeed.class);
-        List<WorksheetEntry> worksheetEntries = worksheetFeed.getEntries();
-        WorksheetEntry worksheetEntry = worksheetEntries.get(0);
-
-        //
-
-        ListFeed listFeed = spreadsheetService.getFeed(spreadsheetEntry.getWorksheetFeedUrl(), ListFeed.class);
-        List<ListEntry> listEntries = listFeed.getEntries();
-
-        for (ListEntry r : listEntries) {
-            for (String tag : r.getCustomElements().getTags()) {
-                System.out.println(r.getCustomElements().getValue(tag));
-            }
-            System.out.println("");
-        }
-
-
-
-    }
 
 
     /**
@@ -171,14 +153,28 @@ public class UpdateSpreadsheet extends Authorization {
             throws IOException, ServiceException, URISyntaxException {
 
         boolean validInput = false;
-        int row = totalRow();
         int insertRow;
+        int insertColumn = CURRENT_COLUMN; // The new column we want to insert. CURRENT_COLUMN index start at 1 instead of 0
 
+        // An empty column is the column that missing a value in a specific cell.
+        // Otherwise, the column is completely filled
+        if (!emptyColumn()) {
+            insertHeader(CURRENT_COLUMN);
+        }
+        else {
+            // If the new header is added,
+            // CURRENT_COLUMN will be incremented by one so
+            // We need to minus one so that it will stay in the
+            // proper column throughout the entire process
+            // of filling up the column field until
+            // it is not empty anymore
+            insertColumn = CURRENT_COLUMN - 1;
+        }
 
 
         // Check for user input. Make sure user input first and last name with their correct ID number
         // Make sure to insert to newColumn only. If all cells are fill then totalCol() == newColumn()
-        if ((insertRow = isInputValid(name, id, row)) < row && insertRow >= 0) {
+        if ((insertRow = isInputValid(name, id)) < ROW && insertRow >= 0) {
 
 
             // Build a new authorized API client service.
@@ -208,8 +204,8 @@ public class UpdateSpreadsheet extends Authorization {
                     .setUpdateCells(new UpdateCellsRequest()
                             .setStart(new GridCoordinate()
                                     .setSheetId(0)
-                                    .setRowIndex(insertRow + 1)
-                                    .setColumnIndex(totalCol()))
+                                    .setRowIndex(insertRow)
+                                    .setColumnIndex(insertColumn))
                             .setRows(Arrays.asList(
                                     new RowData().setValues(values)))
                             .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
@@ -246,8 +242,8 @@ public class UpdateSpreadsheet extends Authorization {
      * @throws ServiceException
      */
 
-    public static void insertHeader()
-    throws IOException, ServiceException {
+    public static void insertHeader(int column)
+            throws IOException, ServiceException {
 
         // Build a new authorized API client service.
         Sheets service = getSheetsService();
@@ -277,7 +273,7 @@ public class UpdateSpreadsheet extends Authorization {
                         .setStart(new GridCoordinate()
                                 .setSheetId(0)
                                 .setRowIndex(0)
-                                .setColumnIndex(totalCol()))
+                                .setColumnIndex(column))
                         .setRows(Arrays.asList(
                                 new RowData().setValues(values)))
                         .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
@@ -306,7 +302,7 @@ public class UpdateSpreadsheet extends Authorization {
      * @throws IOException
      * @throws ServiceException
      */
-    private static int isInputValid (String name, String id, int row)
+    private static int isInputValid (String name, String id)
             throws ServiceException, IOException, URISyntaxException {
 
         // Index to keep track of where to check "yes" to the corresponding first and last name at the correct row
@@ -327,11 +323,11 @@ public class UpdateSpreadsheet extends Authorization {
             List<List<Object>> valueRangeList = getValueRange().getValues();
 
             // Check if student ID and the name input from user is valid. ID will be checked first then user's name
-            if ((index = isIDValid(id)) < row &&
+            if ((index = isIDValid(id)) < ROW &&
                     (validName = valueRangeList.get(index).toArray()[0].equals(lastName)) &&
                     (validName = valueRangeList.get(index).toArray()[1].equals(firstName))) {
             }
-            else if (index > row) {
+            else if (index > ROW) {
                 index = INVALID_ID; // error for invalid ID
             }
             else if (!validName) {
@@ -376,10 +372,62 @@ public class UpdateSpreadsheet extends Authorization {
 
 
     /**
+     * Check to see whether the entire column
+     * is empty or not. In order to do that
+     * we have to check to see whether each cell
+     * within that column is empty.
+     */
+    static boolean emptyColumn()
+            throws ServiceException, IOException, URISyntaxException {
+        return isEmptyField();  // Helper function checking each field
+    }
+
+
+
+    /**
+     * This is a helper function that will
+     * traverse each row and check whether
+     * there is an empty field within that
+     * row. Return false if
+     * one of the field is null indicating
+     * an empty field. Otherwise
+     * the entire row has been filled
+     */
+    private static boolean isEmptyField()
+            throws IOException, ServiceException, URISyntaxException {
+        SpreadsheetService spreadsheetService = new SpreadsheetService("Attendance");
+
+        URL urlSpreadsheet = new URL(URL_FEED);
+        SpreadsheetFeed spreadsheetFeed = spreadsheetService.getFeed(urlSpreadsheet, SpreadsheetFeed.class);
+        SpreadsheetEntry spreadsheetEntry = spreadsheetFeed.getEntries().get(0);
+
+        //WorksheetFeed worksheetFeed = spreadsheetService.getFeed(spreadsheetEntry.getWorksheetFeedUrl(), WorksheetFeed.class);
+        //List<WorksheetEntry> worksheetEntries = worksheetFeed.getEntries();
+        //WorksheetEntry worksheetEntry = worksheetEntries.get(0);
+
+
+
+        ListFeed listFeed = spreadsheetService.getFeed(spreadsheetEntry.getWorksheetFeedUrl(), ListFeed.class);
+        List<ListEntry> listEntries = listFeed.getEntries();
+
+        for (ListEntry r : listEntries) {
+            for (String tag : r.getCustomElements().getTags()) {
+                if (r.getCustomElements().getValue(tag) == null)
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
+
+
+    /**
      * Get range of spreadsheet
      * @throws IOException
      */
-    static ValueRange getValueRange() throws IOException{
+    static ValueRange getValueRange()
+            throws IOException {
         // Get spreadsheet service
         Sheets service = getSheetsService();
 
@@ -393,9 +441,9 @@ public class UpdateSpreadsheet extends Authorization {
     /** Main */
     public static void main(String[] args) throws IOException, ServiceException, URISyntaxException {
 
-        updateSheet("Tuyen Le", "2186948643345347", "tuyen_le92@rocketmail.com");
+        new UpdateSpreadsheet();
+        updateSheet("Anthony Luna", "212712657", "tuyen_le92@rocketmail.com");
 
-        System.out.println(totalCol());
     }
 
 
