@@ -33,6 +33,19 @@ public class UpdateSpreadsheet extends Authorization {
 
 
     /**
+     * A static variable to get service from spreadsheet
+     * to minimize the amount of time invoking getSheetService()
+     * from Authorization class
+     */
+    private static Sheets SHEET_SERVICE;
+    static {
+        try {
+            SHEET_SERVICE = getSheetsService();
+        } catch (IOException e) {
+            System.exit(1);
+        }
+    }
+    /**
      * Pre-defined error value
      * -1 indicates invalid id
      * -2 indicates ID is correct but does not match with the right student
@@ -153,7 +166,7 @@ public class UpdateSpreadsheet extends Authorization {
      */
     public static int updateSheet(String name, String id, String email)
             throws IOException, ServiceException, URISyntaxException {
-        
+
         int insertRow;
         int insertColumn = CURRENT_COLUMN; // The new column we want to insert. CURRENT_COLUMN index start at 1 instead of 0
 
@@ -176,11 +189,6 @@ public class UpdateSpreadsheet extends Authorization {
         // Check for user input. Make sure user input first and last name with their correct ID number
         // Make sure to insert to newColumn only. If all cells are fill then totalCol() == newColumn()
         if ((insertRow = isInputValid(name, id)) < ROW && insertRow >= 0) {
-
-
-            // Build a new authorized API client service.
-            Sheets service = getSheetsService();
-
 
             // Define requests for google API to update the spreadsheet
             List<Request> requests = new ArrayList<>();
@@ -214,7 +222,7 @@ public class UpdateSpreadsheet extends Authorization {
             // Final call to publish the updated sheet to google drive
             BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
                     .setRequests(requests);
-            service.spreadsheets().batchUpdate(getSpreadsheetID(), batchUpdateRequest)
+            SHEET_SERVICE.spreadsheets().batchUpdate(getSpreadsheetID(), batchUpdateRequest)
                     .execute();
         }
         else if (insertRow == INVALID_ID) {
@@ -242,9 +250,6 @@ public class UpdateSpreadsheet extends Authorization {
 
     public static void insertHeader(int column)
             throws IOException, ServiceException {
-
-        // Build a new authorized API client service.
-        Sheets service = getSheetsService();
 
 
         // Define requests for google API to update the spreadsheet
@@ -279,7 +284,7 @@ public class UpdateSpreadsheet extends Authorization {
         // Final call to publish the updated sheet to google drive
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
                 .setRequests(requests);
-        service.spreadsheets().batchUpdate(getSpreadsheetID(), batchUpdateRequest)
+        SHEET_SERVICE.spreadsheets().batchUpdate(getSpreadsheetID(), batchUpdateRequest)
                 .execute();
 
     }
@@ -393,6 +398,7 @@ public class UpdateSpreadsheet extends Authorization {
      */
     private static boolean isEmptyField()
             throws IOException, ServiceException, URISyntaxException {
+
         SpreadsheetService spreadsheetService = new SpreadsheetService("Attendance");
 
         URL urlSpreadsheet = new URL(URL_FEED);
@@ -426,13 +432,9 @@ public class UpdateSpreadsheet extends Authorization {
      */
     static ValueRange getValueRange()
             throws IOException {
-        // Get spreadsheet service
-        Sheets service = getSheetsService();
-
-        String range = "Attendance!A2:D";
 
         // Get range
-        return  service.spreadsheets().values().get(getSpreadsheetID(), range).execute();
+        return  SHEET_SERVICE.spreadsheets().values().get(getSpreadsheetID(), "Attendance!A2:D").execute();
     }
 
 
