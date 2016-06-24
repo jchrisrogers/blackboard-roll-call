@@ -151,10 +151,9 @@ public class UpdateSpreadsheet extends Authorization {
      * @throws IOException
      * @throws ServiceException
      */
-    public static boolean updateSheet(String name, String id, String email)
+    public static int updateSheet(String name, String id, String email)
             throws IOException, ServiceException, URISyntaxException {
-
-        boolean validInput = false;
+        
         int insertRow;
         int insertColumn = CURRENT_COLUMN; // The new column we want to insert. CURRENT_COLUMN index start at 1 instead of 0
 
@@ -217,9 +216,6 @@ public class UpdateSpreadsheet extends Authorization {
                     .setRequests(requests);
             service.spreadsheets().batchUpdate(getSpreadsheetID(), batchUpdateRequest)
                     .execute();
-
-            // Reset to true if user input is correct. Otherwise false
-            validInput = true;
         }
         else if (insertRow == INVALID_ID) {
             System.out.println("Student ID can't be found");    // error handling
@@ -233,7 +229,7 @@ public class UpdateSpreadsheet extends Authorization {
 
 
 
-        return validInput;
+        return insertRow;
     }
 
 
@@ -444,7 +440,7 @@ public class UpdateSpreadsheet extends Authorization {
     public static void main(String[] args) throws IOException, ServiceException, URISyntaxException {
 
         new UpdateSpreadsheet();
-        updateSheet("Dallas Berry", "218676836", "tuyen_le92@rocketmail.com");
+        updateSheet("Tuyen Le", "218694867", "tuyen_le92@rocketmail.com");
 
     }
 
