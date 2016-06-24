@@ -167,7 +167,7 @@ public class UpdateSpreadsheet extends Authorization {
     public static int updateSheet(String name, String id, String email)
             throws IOException, ServiceException, URISyntaxException {
 
-        int insertRow;
+        int insertRow;  // The new row we want to insert. Maximum row is determined by totalRow() method. insertRow cannot exceed maximum row
         int insertColumn = CURRENT_COLUMN; // The new column we want to insert. CURRENT_COLUMN index start at 1 instead of 0
 
         // An empty column is the column that missing a value in a specific cell.
@@ -188,6 +188,7 @@ public class UpdateSpreadsheet extends Authorization {
 
         // Check for user input. Make sure user input first and last name with their correct ID number
         // Make sure to insert to newColumn only. If all cells are fill then totalCol() == newColumn()
+        // insertRow cannot exceed the total row in the spreadsheet. 
         if ((insertRow = isInputValid(name, id)) < ROW && insertRow >= 0) {
 
             // Define requests for google API to update the spreadsheet
@@ -442,7 +443,7 @@ public class UpdateSpreadsheet extends Authorization {
     public static void main(String[] args) throws IOException, ServiceException, URISyntaxException {
 
         new UpdateSpreadsheet();
-        updateSheet("Tuyen Le", "218694867", "tuyen_le92@rocketmail.com");
+        updateSheet("Dallas Berry", "218676836", "tuyen_le92@rocketmail.com");
 
     }
 
