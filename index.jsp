@@ -7,18 +7,41 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="mypackage.UpdateSpreadsheet" %>
+<%@ page import="com.google.gdata.util.ServiceException" %>
+<%@ page import="javax.imageio.IIOException" %>
+<%@ page import="java.io.IOException" %>
+<%@ page import="java.net.URISyntaxException" %>
 
 <html>
 <head>
-    <title>Sign In Form</title>
+  <title>Sign In Form</title>
 </head>
 <body>
-    <!--Get name, email and id when student submit his/her name from signin.html form--%>
+<!--Get name, email and id when student submit his/her name from signin.html form--%>
+
+
+
+
     <%
+     
         String name = request.getParameter("name");
         String id = request.getParameter("id");
         String email = request.getParameter("email");
 
-        UpdateSpreadsheet.updateSheet(name, id, email);
+
+        try {
+            try {
+
+                 UpdateSpreadsheet.updateSheet(name, id, email);
+            } catch (ServiceException e) {
+                
+            }
+        } catch (URISyntaxException e) {
+        
+        }
+
     %>
+
+
+
 </body>
