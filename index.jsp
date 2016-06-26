@@ -8,8 +8,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="mypackage.UpdateSpreadsheet" %>
 <%@ page import="com.google.gdata.util.ServiceException" %>
-<%@ page import="javax.imageio.IIOException" %>
-<%@ page import="java.io.IOException" %>
 <%@ page import="java.net.URISyntaxException" %>
 
 <html>
@@ -21,9 +19,8 @@
 
 
 
-
     <%
-     
+
         String name = request.getParameter("name");
         String id = request.getParameter("id");
         String email = request.getParameter("email");
@@ -31,13 +28,13 @@
 
         try {
             try {
-
+                 new UpdateSpreadsheet();
                  UpdateSpreadsheet.updateSheet(name, id, email);
             } catch (ServiceException e) {
-                
+
             }
         } catch (URISyntaxException e) {
-        
+
         }
 
     %>
