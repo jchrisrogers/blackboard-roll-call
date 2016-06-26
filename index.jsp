@@ -28,8 +28,8 @@
 
         try {
             try {
-                 new UpdateSpreadsheet();
-                 UpdateSpreadsheet.updateSheet(name, id, email);
+
+                 new UpdateSpreadsheet().updateSheet(name, id, email);
             } catch (ServiceException e) {
 
             }
