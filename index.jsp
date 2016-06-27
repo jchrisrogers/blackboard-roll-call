@@ -36,14 +36,14 @@
             // send an email receipt to student
             if (new UpdateSpreadsheet().updateSheet(username, id, passcode) < UpdateSpreadsheet.getRow()) {
                 new Student().storeStudentInfo(username, id);
-                Student.sendFromGMail(username);    // send email receipt to student
+                Student.sendMail(username);    // send email receipt to student
             }
 
         } catch (ServiceException e) {
-            System.exit(1);
+            e.printStackTrace();
         }
     } catch (URISyntaxException e) {
-        System.exit(1);
+        e.printStackTrace();
     }
 
 
