@@ -446,14 +446,6 @@ public class UpdateSpreadsheet extends Authorization {
 
 
 
-    /** Main */
-    public static void main(String[] args) throws IOException, ServiceException, URISyntaxException {
-
-        new UpdateSpreadsheet().updateSheet("dallasberry", "218676836", "tuyen_le92@rocketmail.com");
-
-    }
-
-
 }
 
 
