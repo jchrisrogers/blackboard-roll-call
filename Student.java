@@ -52,10 +52,12 @@ public class Student {
 
         // Concatenate student username to @csus.edu
         username = username + "@csus.edu";
-        String to[] = {username};
+        String to[] = {username};           // Convert to String array
 
         Properties props = System.getProperties();
-        String host = "smtp.gmail.com";
+        String host = "smtp.gmail.com"; // Declare gmail as host
+        
+        // Set properties
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.user", USER_NAME);
@@ -64,7 +66,7 @@ public class Student {
         props.put("mail.smtp.auth", "true");
 
         Session session = Session.getDefaultInstance(props);
-        MimeMessage message = new MimeMessage(session);
+        MimeMessage message = new MimeMessage(session);     // Create new message
 
         try {
             message.setFrom(new InternetAddress(USER_NAME));
