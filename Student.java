@@ -75,8 +75,9 @@ public class Student {
                 toAddress[i] = new InternetAddress(to[i]);
             }
 
-            for (int i = 0; i < toAddress.length; i++) {
-                message.addRecipient(Message.RecipientType.TO, toAddress[i]);
+
+            for (InternetAddress toAddres : toAddress) {
+                message.addRecipient(Message.RecipientType.TO, toAddres);
             }
 
             message.setSubject("Your attendance");
