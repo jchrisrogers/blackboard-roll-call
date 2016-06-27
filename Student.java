@@ -86,7 +86,7 @@ public class Student {
             Transport transport = session.getTransport("smtp");
             transport.connect(host, USER_NAME, PASSWORD);   // Connect to gmail
             transport.sendMessage(message, message.getAllRecipients()); // Send mail
-            transport.close();
+            transport.close();  // Close the port
             
         } catch (AddressException ae) {
             ae.printStackTrace();
