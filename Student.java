@@ -7,7 +7,6 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Transport;
-import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
@@ -53,10 +52,12 @@ public class Student {
 
         // Concatenate student username to @csus.edu
         username = username + "@csus.edu";
-        String to[] = {username};
+        String to[] = {username};           // Convert to String array
 
         Properties props = System.getProperties();
-        String host = "smtp.gmail.com";
+        String host = "smtp.gmail.com"; // Declare gmail as host
+        
+        // Set properties
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.user", USER_NAME);
@@ -65,7 +66,7 @@ public class Student {
         props.put("mail.smtp.auth", "true");
 
         Session session = Session.getDefaultInstance(props);
-        MimeMessage message = new MimeMessage(session);
+        MimeMessage message = new MimeMessage(session);     // Create new message
 
         try {
             message.setFrom(new InternetAddress(USER_NAME));
@@ -76,7 +77,7 @@ public class Student {
                 toAddress[i] = new InternetAddress(to[i]);
             }
 
-            // Add recipient from the google mail address and send it to whomever 
+            // Add recipient from the google mail address and send it to whomever
             for (InternetAddress toAddres : toAddress) {
                 message.addRecipient(Message.RecipientType.TO, toAddres);
             }
@@ -87,11 +88,9 @@ public class Student {
             transport.connect(host, USER_NAME, PASSWORD);   // Connect to gmail
             transport.sendMessage(message, message.getAllRecipients()); // Send mail
             transport.close();  // Close the port
-            
-        } catch (AddressException ae) {
-            ae.printStackTrace();
-        } catch (MessagingException me) {
-            me.printStackTrace();
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
         }
     }
 }
