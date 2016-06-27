@@ -40,10 +40,10 @@
             }
 
         } catch (ServiceException e) {
-            System.exit(1);
+            e.printStackTrace();
         }
     } catch (URISyntaxException e) {
-        System.exit(1);
+        e.printStackTrace();
     }
 
 
