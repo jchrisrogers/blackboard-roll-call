@@ -46,13 +46,14 @@ public class Student {
      * Send email to recipient
      * by concatenating the username
      * with "@csus.edu"
-     * @param email
+     * @param username
      */
 
-    public static void sendMail(String email) {
+    public static void sendMail(String username) {
 
-        email = email + "@csus.edu";
-        String to[] = {email};
+        // Concatenate student username to @csus.edu
+        username = username + "@csus.edu";
+        String to[] = {username};
 
         Properties props = System.getProperties();
         String host = "smtp.gmail.com";
