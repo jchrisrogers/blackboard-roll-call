@@ -76,17 +76,18 @@ public class Student {
                 toAddress[i] = new InternetAddress(to[i]);
             }
 
-
+            // Add recipient from the google mail address and send it to whomever 
             for (InternetAddress toAddres : toAddress) {
                 message.addRecipient(Message.RecipientType.TO, toAddres);
             }
 
-            message.setSubject("Your attendance");
-            message.setText("Your submission was at: " + new java.util.Date());
+            message.setSubject("Your attendance");  // Title
+            message.setText("Your submission was at: " + new java.util.Date()); // Body of email
             Transport transport = session.getTransport("smtp");
-            transport.connect(host, USER_NAME, PASSWORD);
-            transport.sendMessage(message, message.getAllRecipients());
+            transport.connect(host, USER_NAME, PASSWORD);   // Connect to gmail
+            transport.sendMessage(message, message.getAllRecipients()); // Send mail
             transport.close();
+            
         } catch (AddressException ae) {
             ae.printStackTrace();
         } catch (MessagingException me) {
