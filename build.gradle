@@ -1,5 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'application'
+apply plugin: 'war'
+apply plugin: 'jetty'
 
 mainClassName = 'SheetsQuickstart'
 sourceCompatibility = 1.7

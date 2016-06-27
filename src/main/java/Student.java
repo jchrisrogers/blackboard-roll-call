@@ -1,6 +1,3 @@
-package mypackage;
-
-
 import java.util.*;
 import java.util.Properties;
 import javax.mail.Message;
