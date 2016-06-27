@@ -9,36 +9,44 @@
 <%@ page import="mypackage.UpdateSpreadsheet" %>
 <%@ page import="com.google.gdata.util.ServiceException" %>
 <%@ page import="java.net.URISyntaxException" %>
+<%@ page import="mypackage.Student" %>
 
 <html>
 <head>
-  <title>Sign In Form</title>
+
+    <title>Submission Form</title>
+
+
 </head>
 <body>
-<!--Get name, email and id when student submit his/her name from signin.html form--%>
+
+<%
 
 
-
-    <%
-
-        String name = request.getParameter("name");
-        String id = request.getParameter("id");
-        String email = request.getParameter("email");
+    String username = request.getParameter("username");
+    String id = request.getParameter("id");
+    String passcode = request.getParameter("passcode");
 
 
+    try {
         try {
-            try {
 
-                 new UpdateSpreadsheet().updateSheet(name, id, email);
-            } catch (ServiceException e) {
-
+            // Indicate username and id are valid.
+            // If username and id are valid then
+            // send an email receipt to student
+            if (new UpdateSpreadsheet().updateSheet(username, id, passcode) < UpdateSpreadsheet.getRow()) {
+                new Student().storeStudentInfo(username, id);
+                Student.sendFromGMail(username);    // send email receipt to student
             }
-        } catch (URISyntaxException e) {
 
+        } catch (ServiceException e) {
+            System.exit(1);
         }
+    } catch (URISyntaxException e) {
+        System.exit(1);
+    }
 
-    %>
 
-
+%>
 
 </body>
