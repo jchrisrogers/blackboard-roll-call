@@ -10,6 +10,7 @@
 <%@ page import="com.google.gdata.util.ServiceException" %>
 <%@ page import="java.net.URISyntaxException" %>
 <%@ page import="mypackage.Student" %>
+<%@ page import="mypackage.Professor"%>
 
 <html>
 <head>
@@ -27,8 +28,10 @@
 
             // Indicate username and id are valid.
             // If username and id are valid then
-            // send an email receipt to student
-            if (new UpdateSpreadsheet().updateSheet(username, id, passcode) < UpdateSpreadsheet.getRow()) {
+            // check for the passcode whether it 
+            // matches with the one professor generated
+            if (new UpdateSpreadsheet().updateSheet(username, id, passcode) < UpdateSpreadsheet.getRow() &&
+                    Professor.passcodeExist(passcode)) {
                 new Student().storeStudentInfo(username, id);
                 Student.sendMail(username);    // send email receipt to student
             }
