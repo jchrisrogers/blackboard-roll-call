@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Activation Page</title>
+    <script src="http://code.jquery.com/jquery-1.10.1.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        #dialog {
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+
+<!-- Two button for instruction and passcode generator -->
+<button id="instruction">Click for Instruction</button>
+<button id="generator">Generate passcode</button>
+
+
+<p></p>
+
+
+
+<!-- Copy google spreadsheet ID here and passcode will appear here -->
+<form action="Fetching.jsp" id="submission" method="post">
+    <span id="codeMissing"></span> <br>
+    <label for="code"></label>
+    <input id="code" placeholder="passcode" type="text"> <br>
+    <span id="idMissing"></span> <br>
+    <label for="spreadsheetID"></label>
+    <input id="spreadsheetID" placeholder="spreadsheet ID" type="text"> <br>
+    <button id="submit" type="submit">Submit</button>
+</form>
+
+
+<!-- Instruction pop and hide -->
+<div id="dialog" title="Instruction">
+    <p>1. Create a spreadsheet on google drive</p>
+    <p>2. Copy your spreadsheet ID. It should look like: https://docs.google.com/spreadsheets/d/spreadsheetID/edit</p>
+    <p>3. Copy and paste the link into the spreadsheet ID box</p>
+    <p>4. Generate the passcode to populate the spreadsheet with student attendance</p>
+</div>
+
+
+
+<!-- some scripting and jquery -->
+<script>
+
+    // Visual effect for dialog
+    $(function () {
+        // Hide on default
+        // Automatically hide from user untill clicked
+        $("#dialog").dialog({
+            autoOpen: false,    // hide on default
+            show: {
+                effect: "blind",
+                duration: 1000
+            },
+            // Explode out of the screen when click close
+            hide: {
+                effect: "explode",
+                duration: 1000
+            }
+        });
+
+        // Visual effect for form submission
+        // Automatically hide from user until clicked on the button "generate code"
+        $(function () {
+            $('#submission').dialog({
+                autoOpen: false,
+                show: {
+                    effect: "blind",
+                    duration: 1000
+                },
+            });
+        });
+
+        // Pop up only when user click on button "instruction"
+        $("#instruction").click(function () {
+            $("#dialog").dialog("open");
+
+        });
+    });
+
+
+
+    // Upon clicking the button "generate code"
+    $('#generator').click(function () {
+        // Input random number into input box with id="code"
+        $("#code").val(Math.floor(Math.random() * 10000000000) + "");
+        // Simultaneously open the submission form at the same time
+        $('#submission').dialog('open').submit(function (event) {
+            // Check if any fields are empty
+            if ($('#code').val() === "") {
+                $('#codeMissing').text('code missing').show();
+                event.preventDefault();
+            } else {
+                $('#codeMissing').text("").show();
+            }
+
+            if ($('#spreadsheetID').val() === "") {
+                $('#idMissing').text('spreadsheet id missing').show();
+                event.preventDefault();
+            } else {
+                $('#idMissing').text("").show();
+            }
+        });
+    });
+
+
+</script>
+
+</body>
+</html>

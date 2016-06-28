@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <script src="https://code.jquery.com/jquery-1.10.2.js"></script>
+    <title>Professor Login</title>
+    <style>
+        body {
+            background: -webkit-linear-gradient(antiquewhite, black); /* For Safari 5.1 to 6.0 */
+            background: -o-linear-gradient(antiquewhite, black); /* For Opera 11.1 to 12.0 */
+            background: -moz-linear-gradient(antiquewhite, black); /* For Firefox 3.6 to 15 */
+            background: linear-gradient(antiquewhite, black); /* Standard syntax */
+            height: 700px;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <form method="post" action="Activation.html">
+        <table>
+            <tr>
+                <th>Name</th>
+                <th><input id="name" placeholder="name" type="text"></th>
+                <th><span id="nameMissing"></span> <br></th>
+            </tr>
+            <tr>
+                <th>Class</th>
+                <th><input id="class" placeholder="class" type="text"></th>
+                <th><span id="classMissing"></span> </th>
+            </tr>
+            <tr>
+                <th>Section</th>
+                <th><input id="section" placeholder="section" type="text"></th>
+                <th><span id="sectionMissing"></span> </th>
+            </tr>
+        </table>
+        <button id="submit" type="submit">Submit</button>
+        <button type="reset">Reset</button>
+    </form>
+</div>
+
+<!--Check whether if any input is empty then prompt user to fill them all out. Otherwise proceed to another page-->
+<script>
+    $(document).ready(function () {
+        $("form").submit(function (event) {
+            if ($('#name').val() === "") {
+                $('#nameMissing').text('name missing').show();
+                event.preventDefault();
+            } else {
+                $('#nameMissing').text("").show();
+            }
+
+
+            if ($('#class').val() === "") {
+                $('#classMissing').text('class missing').show();
+                event.preventDefault();
+            } else {
+                $('#classMissing').text("").show();
+            }
+
+            if ($('#section').val() === "") {
+                $('#sectionMissing').text('section missing').show();
+                event.preventDefault();
+            } else {
+                $('#sectionMissing').text('section missing').show();
+            }
+        })
+    })
+</script>
+</body>
+</html>
