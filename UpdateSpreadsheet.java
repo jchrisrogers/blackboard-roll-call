@@ -24,7 +24,7 @@ public class UpdateSpreadsheet extends Authorization {
      * current column, row and
      * date in the spreadsheet
      */
-    UpdateSpreadsheet()
+    public UpdateSpreadsheet()
             throws IOException, ServiceException, URISyntaxException {
         CURRENT_COLUMN = totalCol();
         ROW = totalRow();
@@ -35,7 +35,7 @@ public class UpdateSpreadsheet extends Authorization {
     /**
      * A static variable to get service from spreadsheet
      * to minimize the amount of time invoking getSheetService()
-     * from Authorization class
+     * from mypackage.Authorization class
      */
     private static Sheets SHEET_SERVICE;
     static {
@@ -147,7 +147,7 @@ public class UpdateSpreadsheet extends Authorization {
         // Get access to that list
         ListEntry listEntry = listFeed.getEntries().get(0);
 
-        System.out.println(listEntry.getCustomElements().getTags());
+
         // Return the total of columns
         return listEntry.getCustomElements().getTags().size();
     }
@@ -158,13 +158,13 @@ public class UpdateSpreadsheet extends Authorization {
 
     /**
      * Update google spreadsheet
-     * @param name
-     * @param email
+     * @param username
+     * @param passcode
      * @param id
      * @throws IOException
      * @throws ServiceException
      */
-    public static int updateSheet(String name, String id, String email)
+    public int updateSheet(String username, String id, String passcode)
             throws IOException, ServiceException, URISyntaxException {
 
         int insertRow;  // The new row we want to insert. Maximum row is determined by totalRow() method. insertRow cannot exceed maximum row
@@ -174,6 +174,7 @@ public class UpdateSpreadsheet extends Authorization {
         // Otherwise, the column is completely filled
         if (!emptyColumn()) {
             insertHeader(CURRENT_COLUMN);
+            System.out.println("Shit");
         }
         else {
             // If the new header is added,
@@ -188,8 +189,9 @@ public class UpdateSpreadsheet extends Authorization {
 
         // Check for user input. Make sure user input first and last name with their correct ID number
         // Make sure to insert to newColumn only. If all cells are fill then totalCol() == newColumn()
-        // insertRow cannot exceed the total row in the spreadsheet. 
-        if ((insertRow = isInputValid(name, id)) < ROW && insertRow >= 0) {
+        // insertRow cannot exceed the total row in the spreadsheet.
+        // If insertRow is less than 0, that means we have an error
+        if ((insertRow = isInputValid(username, id)) < ROW && insertRow >= 0) {
 
             // Define requests for google API to update the spreadsheet
             List<Request> requests = new ArrayList<>();
@@ -306,7 +308,7 @@ public class UpdateSpreadsheet extends Authorization {
      * @throws IOException
      * @throws ServiceException
      */
-    private static int isInputValid (String name, String id)
+    private static int isInputValid (String username, String id)
             throws ServiceException, IOException, URISyntaxException {
 
         // Index to keep track of where to check "yes" to the corresponding first and last name at the correct row
@@ -318,18 +320,14 @@ public class UpdateSpreadsheet extends Authorization {
         // into first name and last name. Making sure there is blank space separating first and last name
         try {
 
-            // Split name into first and last name
-            String firstName = name.split("\\s")[0];
-            String lastName = name.split("\\s")[1];
-
 
             // Get all the first, last name and email then store into List of Array
             List<List<Object>> valueRangeList = getValueRange().getValues();
 
             // Check if student ID and the name input from user is valid. ID will be checked first then user's name
             if ((index = isIDValid(id)) < ROW &&
-                    (validName = valueRangeList.get(index).toArray()[0].equals(lastName)) &&
-                    (validName = valueRangeList.get(index).toArray()[1].equals(firstName))) {
+                    (validName = valueRangeList.get(index).toArray()[0].equals(username))) {
+                // Empty
             }
             else if (index > ROW) {
                 index = INVALID_ID; // error for invalid ID
@@ -365,7 +363,7 @@ public class UpdateSpreadsheet extends Authorization {
 
         // Look for valid ID
         for (List list : valueRangeList) {
-            if (list.get(3).equals(id)) {
+            if (list.get(1).equals(id)) {
                 break;
             }
             index++;
@@ -435,17 +433,17 @@ public class UpdateSpreadsheet extends Authorization {
             throws IOException {
 
         // Get range
-        return  SHEET_SERVICE.spreadsheets().values().get(getSpreadsheetID(), "Attendance!A2:D").execute();
+        return  SHEET_SERVICE.spreadsheets().values().get(getSpreadsheetID(), "Attendance!C2:D").execute();
     }
 
 
-    /** Main */
-    public static void main(String[] args) throws IOException, ServiceException, URISyntaxException {
-
-        new UpdateSpreadsheet();
-        updateSheet("Dallas Berry", "218676836", "tuyen_le92@rocketmail.com");
-
+    /**
+     * Get total row
+     */
+    public static int getRow() {
+        return ROW;
     }
+
 
 
 }
