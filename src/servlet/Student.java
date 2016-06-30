@@ -67,7 +67,7 @@ public class Student extends HttpServlet {
                      * If the passcode is valid then check for student name and id to
                      * see whether it is in the spreadsheet. If they are already in the
                      * spreadsheet then update their attendance. Otherwise, prompt an
-                     * error page
+                     * error page (Error.jsp)
                      */
                     if (new Authentication(spreadsheetID).isInputValid(username, studentId) >= 0) {
                         String courseTitle = Professor.getCourseTitle(passcode);

@@ -20,7 +20,7 @@ import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.List;
 
-public class Authorization  {
+class Authorization  {
 
     /**
      * Default constructor

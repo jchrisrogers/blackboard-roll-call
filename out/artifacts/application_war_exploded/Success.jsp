@@ -11,6 +11,7 @@
 <%@ page import="com.google.gdata.util.ServiceException" %>
 <%@ page import="java.net.URISyntaxException" %>
 <%@ page import="SpreadsheetProperty.SendMail" %>
+<%@ page import="SpreadsheetProperty.Spreadsheet" %>
 
 
 <html>
@@ -25,7 +26,7 @@
 </head>
 <body>
 
-Thank you for your submission. An email confirmation has been sent to <%=(String)request.getAttribute("username") + "@csus.edu"%>
+Thank you for your submission. An email confirmation has been sent to <%=request.getAttribute("username") + "@csus.edu"%>
 <%
 
     String username = (String)request.getAttribute("username");
@@ -36,8 +37,10 @@ Thank you for your submission. An email confirmation has been sent to <%=(String
 
     try {
         try {
-            new UpdateSpreadsheet(spreadsheetID).updateSheet(username, studentID, courseTitle);
-            new SendMail(username);
+            new Spreadsheet(spreadsheetID);                                 // Create a new spreadsheet with properties such as row, column
+            Spreadsheet.setCourseTitle(courseTitle);                        // Set a title for that spreadsheet
+            new UpdateSpreadsheet().updateSheet(username, studentID);       // Update the spreadsheet
+           // new SendMail(username, courseTitle);                            // Send email notification
         } catch (ServiceException e) {
             e.printStackTrace();
         }

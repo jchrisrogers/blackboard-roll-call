@@ -21,25 +21,8 @@ public class UpdateSpreadsheet extends Authentication {
 
 
 
-    /**
-     * Constructor to update the
-     * current column, row and
-     * date in the spreadsheet
-     */
-    public UpdateSpreadsheet(String spreadsheetID)
-            throws IOException, ServiceException, URISyntaxException {
-        super(spreadsheetID);
+    /*****************************************************************************************************/
 
-        UpdateSpreadsheet.spreadsheetID = spreadsheetID;
-        insertColumn = getCols();
-    }
-
-
-
-    /**
-     * Constant variable Spreadsheet ID
-     */
-    private static String spreadsheetID;
 
 
 
@@ -54,14 +37,26 @@ public class UpdateSpreadsheet extends Authentication {
     private static int insertColumn;
 
 
-    /**
-     * Current Date
-     */
+    /** Current Date **/
     private static String CURRENT_DATE = new java.util.Date().toString();
 
 
 
+    /*****************************************************************************************************/
 
+
+
+
+    /**
+     * Constructor to update the
+     * current column, row and
+     * date in the spreadsheet
+     */
+    public UpdateSpreadsheet()
+            throws IOException, ServiceException, URISyntaxException {
+
+        insertColumn = getCols();
+    }
 
 
 
@@ -72,7 +67,7 @@ public class UpdateSpreadsheet extends Authentication {
      * @throws IOException
      * @throws ServiceException
      */
-    public void updateSheet(String username, String id, String courseTitle)
+    public void updateSheet(String username, String id)
             throws IOException, ServiceException, URISyntaxException {
 
         // The new row we want to insert.  insertRow cannot exceed maximum row
@@ -84,6 +79,7 @@ public class UpdateSpreadsheet extends Authentication {
         // Otherwise, the column is completely filled
         if (!emptyColumn()) {
             insertHeader(insertColumn);
+            System.out.println("slfkj");
         }
         else {
             // If the new header is added,
@@ -102,16 +98,9 @@ public class UpdateSpreadsheet extends Authentication {
         // If insertRow is less than 0, that means we have an error
 
         if (insertRow < getRows() && insertRow >= 0) {
-            // Define requests for google API to update the spreadsheet
-            List<Request> requests = new ArrayList<>();
 
-            // Call to google API for request and update
-            requests.add(new Request()
-                    .setUpdateSheetProperties(new UpdateSheetPropertiesRequest()
-                            .setProperties(new SheetProperties()
-                                    .setSheetId(0)
-                                    .setTitle("Attendance: " + courseTitle))
-                            .setFields("title")));
+            // Define requests for google API to update the spreadsheet. The getRequest() method is inherited from Spreadsheet Class
+            List<Request> requests = getRequest();
 
 
             // update spreadsheet by appending the new information below the current row
@@ -134,7 +123,7 @@ public class UpdateSpreadsheet extends Authentication {
             // Final call to publish the updated sheet to google drive
             BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
                     .setRequests(requests);
-            SHEET_SERVICE.spreadsheets().batchUpdate(spreadsheetID, batchUpdateRequest)
+            SHEET_SERVICE.spreadsheets().batchUpdate(getSpreadsheetID(), batchUpdateRequest)
                     .execute();
         }
 
@@ -148,20 +137,13 @@ public class UpdateSpreadsheet extends Authentication {
      * @throws ServiceException
      */
 
-    public static void insertHeader(int column)
+    private static void insertHeader(int column)
             throws IOException, ServiceException {
 
 
         // Define requests for google API to update the spreadsheet
-        List<Request> requests = new ArrayList<>();
+        List<Request> requests = getRequest();
 
-        // Call to google API for request and update
-//        requests.add(new Request()
-//                .setUpdateSheetProperties(new UpdateSheetPropertiesRequest()
-//                        .setProperties(new SheetProperties()
-//                                .setSheetId(0)
-//                                .setTitle("Attendance"))
-//                        .setFields("title")));
 
 
         // Update spreadsheet by appending the new information below the current row
@@ -184,7 +166,7 @@ public class UpdateSpreadsheet extends Authentication {
         // Final call to publish the updated sheet to google drive
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
                 .setRequests(requests);
-        SHEET_SERVICE.spreadsheets().batchUpdate(spreadsheetID, batchUpdateRequest)
+        SHEET_SERVICE.spreadsheets().batchUpdate(getSpreadsheetID(), batchUpdateRequest)
                 .execute();
 
     }
@@ -199,7 +181,7 @@ public class UpdateSpreadsheet extends Authentication {
      * we have to check to see whether each cell
      * within that column is empty.
      */
-    static boolean emptyColumn()
+    private static boolean emptyColumn()
             throws ServiceException, IOException, URISyntaxException {
         return isEmptyField();  // Helper function checking each field
     }
@@ -238,6 +220,7 @@ public class UpdateSpreadsheet extends Authentication {
 
         return false;
     }
+
 
 }
 

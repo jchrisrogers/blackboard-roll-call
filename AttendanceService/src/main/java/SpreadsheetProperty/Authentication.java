@@ -17,21 +17,29 @@ import java.util.Set;
  */
 public class Authentication extends Spreadsheet {
 
-    /**
-     * Create an array of
-     */
+
+    /*****************************************************************************************************/
+
+    /**Create an array of student and get the header row of the spreadsheet**/
     private List<ListEntry> listEntry = getListEntry();
     private Set<String> headerRow = getHeaderRow();
 
-    /**
-     * Constructor that takes
-     * int a spreadsheet ID
-     *
-     * @param spreadsheetID
-     */
+
+
+    /*****************************************************************************************************/
+
+
+
+    /** A default constructor **/
     public Authentication(String spreadsheetID)
             throws IOException, ServiceException, URISyntaxException {
         super(spreadsheetID);
+    }
+
+
+    /** Default constructor, doesn't do anything **/
+    public Authentication() throws IOException, ServiceException {
+        // Empty
     }
 
     /**
@@ -53,7 +61,7 @@ public class Authentication extends Spreadsheet {
         // Make sure student input first and last name. This block will try to split name variable
         // into first name and last name. Making sure there is blank space separating first and last name
         // Check if student ID and the name input from user is valid. ID will be checked first then user's name
-        if ((index = isIDValid(id)) < getRows() &&
+        if ((index = isIDValid(id)) < getRows() && index >= 0 &&
                 listEntry.get(index).getPlainTextContent().split(",")[getUsernameIndex()-1].split(":\\s")[1].equals(username)) {
 
             return index;
@@ -81,13 +89,12 @@ public class Authentication extends Spreadsheet {
         for (ListEntry list : listEntry) {
             // Since the ID field is "student: id" so we need to split the string to get the "id" part only and not the "student:"
             if (list.getPlainTextContent().split(",")[getiDIndex() - 1].split(":\\s")[1] .equals(id)) {
-                break;
+                return idFound;
             }
             idFound++;
         }
 
-
-        return idFound;
+        return -1;
     }
 
 
@@ -115,9 +122,9 @@ public class Authentication extends Spreadsheet {
         return index;
     }
 
+//    public static void main(String argv[]) throws IOException, ServiceException, URISyntaxException {
+//        System.out.println(new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("sasonbaghdadi", "216722988"));
+//    }
 
-    public static void main(String argv[]) throws IOException, ServiceException, URISyntaxException {
-        System.out.println(new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("tuyenle", "218694867"));
-    }
 
 }
