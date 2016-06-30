@@ -41,7 +41,7 @@ public class Student extends HttpServlet {
         // Get request from user input
         String username = request.getParameter("username");
         String passcode = request.getParameter("passcode");
-        String id = request.getParameter("id");
+        String studentId = request.getParameter("studentId");
 
 
 
@@ -69,8 +69,9 @@ public class Student extends HttpServlet {
                      * spreadsheet then update their attendance. Otherwise, prompt an
                      * error page
                      */
-                    if (new Authentication(spreadsheetID).isInputValid(username, id) >= 0) {
-                        displayConfirmation(response, request, username, spreadsheetID, id);
+                    if (new Authentication(spreadsheetID).isInputValid(username, studentId) >= 0) {
+                        String courseTitle = Professor.getCourseTitle(passcode);
+                        displayConfirmation(response, request, username, spreadsheetID, studentId, courseTitle);
                     } else {
                         RequestDispatcher rd = getServletContext().getRequestDispatcher("/Error.jsp");
                         rd.forward(request, response);
@@ -93,14 +94,15 @@ public class Student extends HttpServlet {
 
 
     private void displayConfirmation(HttpServletResponse response, HttpServletRequest request,
-                                            String username, String spreadsheetID, String id)
+                                            String username, String spreadsheetID, String studentID, String courseTitle)
     throws IOException, ServletException {
         // Update spreadsheet with the corresponding passcode input by student
 
         RequestDispatcher rd;
         request.setAttribute("username", username);
         request.setAttribute("spreadsheetID", spreadsheetID);
-        request.setAttribute("id", id);
+        request.setAttribute("studentID", studentID);
+        request.setAttribute("courseTitle", courseTitle);
         rd = getServletContext().getRequestDispatcher("/Success.jsp");
         rd.forward(request, response);
 

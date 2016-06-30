@@ -26,7 +26,7 @@ public class SendMail {
      * with "@csus.edu"
      * @param username
      */
-    public SendMail(String username) {
+    public SendMail(String username, String courseTitle) {
 
         String to[] = {username};           // Convert to String array
 
@@ -59,7 +59,7 @@ public class SendMail {
             }
 
             message.setSubject("Your attendance");  // Title
-            message.setText("Your submission was at: " + new java.util.Date()); // Body of email
+            message.setText("Your submission for" + courseTitle + " was at: " + new java.util.Date()); // Body of email
             Transport transport = session.getTransport("smtp");
             transport.connect(host, USER_NAME, PASSWORD);   // Connect to gmail
             transport.sendMessage(message, message.getAllRecipients()); // Send mail

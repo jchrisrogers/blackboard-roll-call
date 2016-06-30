@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by TinTin on 6/29/16.
@@ -17,6 +18,9 @@ import java.util.List;
  * ID
  */
 public class Spreadsheet {
+
+    // Get spreadsheet service
+    private static final SpreadsheetService service = new SpreadsheetService("Attendance");
 
     /**
      * Spreadsheet ID
@@ -102,8 +106,6 @@ public class Spreadsheet {
     private static int totalRow()
             throws ServiceException, IOException, URISyntaxException {
 
-        // Get spreadsheet service
-        SpreadsheetService service = new SpreadsheetService("Attendance");
 
         // Define URL to request
         URL urlFeed = new URL(url_feed);
@@ -114,15 +116,8 @@ public class Spreadsheet {
 
 
 
-        // Declare Sheet entry to manipulate data
-        SpreadsheetEntry sheetEntry = spreadsheets.get(0);
-
-
-        // Fetch the data from google spreadsheet
-        List<WorksheetEntry> worksheetEntry = sheetEntry.getWorksheets();
-
         // Count how many row already exist in the spread sheet
-        return worksheetEntry.size();
+        return spreadsheets.get(0).getWorksheets().size();
 
     }
 
@@ -138,30 +133,42 @@ public class Spreadsheet {
     private static int totalCol()
             throws ServiceException, IOException {
 
-        /// Get spreadsheet service
-        SpreadsheetService service = new SpreadsheetService("Attendance");
+        // Return the total of columns
+        return getListEntry().get(0).getCustomElements().getTags().size();
+    }
+
+
+    /**
+     * Get the list entry of all the row in the spreadsheet
+     */
+    protected static List<ListEntry> getListEntry() throws IOException, ServiceException {
+
 
         // Define URL to request
         URL urlFeed = new URL(url_feed);
 
         // Get spreadsheet feed and store them in the List object
         SpreadsheetFeed feed = service.getFeed(urlFeed, SpreadsheetFeed.class);
+
         List<SpreadsheetEntry> spreadsheets = feed.getEntries();
 
 
 
-        // Declare Sheet entry to manipulate data
-        SpreadsheetEntry sheetEntry = spreadsheets.get(0);
-
-
         // Feed url to a List
-        ListFeed listFeed = service.getFeed(sheetEntry.getWorksheetFeedUrl(), ListFeed.class);
+        ListFeed listFeed = service.getFeed(spreadsheets.get(0).getWorksheetFeedUrl(), ListFeed.class);
 
-        // Get access to that list
-        ListEntry listEntry = listFeed.getEntries().get(0);
+        // Return access to that sheet
+        return listFeed.getEntries();
 
+    }
 
-        // Return the total of columns
-        return listEntry.getCustomElements().getTags().size();
+    /**
+     * Get the row header of the spreadsheet
+     */
+    protected static Set<String> getHeaderRow() throws IOException, ServiceException {
+
+        // Return access to that sheet
+        return getListEntry().get(0).getCustomElements().getTags();
+
     }
 }

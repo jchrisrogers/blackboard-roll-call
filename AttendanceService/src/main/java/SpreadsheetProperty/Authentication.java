@@ -1,12 +1,13 @@
 package SpreadsheetProperty;
 
 
-import com.google.api.services.sheets.v4.model.ValueRange;
-import com.google.gdata.util.ServiceException;
 
+import com.google.gdata.data.spreadsheet.*;
+import com.google.gdata.util.ServiceException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by TinTin on 6/28/16.
@@ -15,6 +16,12 @@ import java.util.List;
  * name are on the spreadsheet
  */
 public class Authentication extends Spreadsheet {
+
+    /**
+     * Create an array of
+     */
+    private List<ListEntry> listEntry = getListEntry();
+    private Set<String> headerRow = getHeaderRow();
 
     /**
      * Constructor that takes
@@ -45,16 +52,13 @@ public class Authentication extends Spreadsheet {
 
         // Make sure student input first and last name. This block will try to split name variable
         // into first name and last name. Making sure there is blank space separating first and last name
-
-
-        // Get all the first, last name and email then store into List of Array
-        List<List<Object>> valueRangeList = getValueRange().getValues();
-
         // Check if student ID and the name input from user is valid. ID will be checked first then user's name
         if ((index = isIDValid(id)) < getRows() &&
-                (valueRangeList.get(index).toArray()[0].equals(username))) {
+                listEntry.get(index).getPlainTextContent().split(",")[getUsernameIndex()-1].split(":\\s")[1].equals(username)) {
+
             return index;
-        } else {
+        }
+        else {
             return -1;  // Indicate out of bound rows
         }
     }
@@ -64,7 +68,6 @@ public class Authentication extends Spreadsheet {
     /**
      * Check for ID if it matches
      * with the student ID and the user input
-     *
      * @throws IOException
      * @throws ServiceException
      */
@@ -72,33 +75,49 @@ public class Authentication extends Spreadsheet {
     private int isIDValid(String id)
             throws IOException, ServiceException, URISyntaxException {
 
+        int idFound = 0;     // A student ID found within a particular array. The total numbers of array really depends on how many student we have total
 
-        // Store into List object
-        List<List<Object>> valueRangeList = getValueRange().getValues();
-        int index = 0;
-
-        // Look for valid ID
-        for (List list : valueRangeList) {
-            if (list.get(1).equals(id)) {
+        // Traverse the entry of each array. Since each student belong to an Array
+        for (ListEntry list : listEntry) {
+            // Since the ID field is "student: id" so we need to split the string to get the "id" part only and not the "student:"
+            if (list.getPlainTextContent().split(",")[getiDIndex() - 1].split(":\\s")[1] .equals(id)) {
                 break;
             }
-            index++;
+            idFound++;
         }
 
-        return index;
+
+        return idFound;
     }
 
 
     /**
-     * Get range of spreadsheet
-     *
-     * @throws IOException
+     * Cell query to get the index of username and student ID
      */
-    private ValueRange getValueRange()
-            throws IOException {
+    private int getUsernameIndex() throws IOException, ServiceException {
+        int index = 0;
+        for (String element : headerRow) {
+            if (element.equals("username"))
+                break;
+            index++;
+        }
+        return index;
+    }
 
-        // Get range
-        return SHEET_SERVICE.spreadsheets().values().get(super.getSpreadsheetID(), "Attendance!C2:D").execute();
+
+    private int getiDIndex() throws IOException, ServiceException {
+        int index = 0;
+        for (String element : headerRow) {
+            if (element.matches("studentid"))
+                break;
+            index++;
+        }
+        return index;
+    }
+
+
+    public static void main(String argv[]) throws IOException, ServiceException, URISyntaxException {
+        System.out.println(new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("tuyenle", "218694867"));
     }
 
 }

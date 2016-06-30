@@ -181,8 +181,8 @@
         </p>
         <span id ="idMissing"></span>
         <p>
-            <label for="id"></label>
-            <input id="id" name="id" placeholder="studentID" onfocus="this.placeholder=''" onblur="this.placeholder='studentID'" type="tel">
+            <label for="studentId"></label>
+            <input id="studentId" name="studentId" placeholder="studentID" onfocus="this.placeholder=''" onblur="this.placeholder='studentID'" type="tel">
         </p>
         <span id="passcodeMissing"></span>
         <p>
@@ -204,7 +204,7 @@
                 $('#nameMissing').text('Missing name field').show().fadeOut(10000);
                 event.preventDefault();
             }
-            if ($('#id').val() === "") {
+            if ($('#studentId').val() === "") {
                 $('#idMissing').text('Missing id field').show().fadeOut(10000);
                 event.preventDefault();
             }

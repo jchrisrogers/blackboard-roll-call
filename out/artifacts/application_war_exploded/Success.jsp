@@ -29,13 +29,14 @@ Thank you for your submission. An email confirmation has been sent to <%=(String
 <%
 
     String username = (String)request.getAttribute("username");
-    String studentID =  (String)request.getAttribute("id");
+    String studentID =  (String)request.getAttribute("studentID");
     String spreadsheetID =  (String)request.getAttribute("spreadsheetID");
+    String courseTitle = (String)request.getAttribute("courseTitle");
 
 
     try {
         try {
-            new UpdateSpreadsheet(spreadsheetID).updateSheet(username, studentID);
+            new UpdateSpreadsheet(spreadsheetID).updateSheet(username, studentID, courseTitle);
             new SendMail(username);
         } catch (ServiceException e) {
             e.printStackTrace();

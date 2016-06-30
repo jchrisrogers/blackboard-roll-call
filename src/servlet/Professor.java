@@ -44,9 +44,13 @@ public class Professor extends HttpServlet {
         dataIn.add(request.getParameter("code"));
         dataIn.add(request.getParameter("spreadsheetID"));
 
+
+
         // Store an array into List<List<String>> class
         professorData.add(dataIn);
 
+
+        // Print out a successful submission page
         response.setContentType("text/html");
         PrintWriter out = response.getWriter();
         String title = "Reading request";
@@ -81,9 +85,21 @@ public class Professor extends HttpServlet {
      */
     public static String passcodeExist(String passcode) {
 
-        for (List<String> list : professorData) {
+        for (List list : professorData) {
             if (list.get(2).equals(passcode))
-                return list.get(3);
+                return (String) list.get(3);        // Cast to string since list.get(3) returns an object
+        }
+        return "";      // Return an empty string if no passcode exist
+    }
+
+    /**
+     * Get the course and its section number
+     */
+    public static String getCourseTitle(String passcode) {
+        for (List list : professorData) {
+            if (list.get(2).equals(passcode)) {
+                return (String) list.get(1);    // Cast to string since list.get(1) returns an object
+            }
         }
         return "";
     }

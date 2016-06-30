@@ -72,7 +72,7 @@ public class UpdateSpreadsheet extends Authentication {
      * @throws IOException
      * @throws ServiceException
      */
-    public void updateSheet(String username, String id)
+    public void updateSheet(String username, String id, String courseTitle)
             throws IOException, ServiceException, URISyntaxException {
 
         // The new row we want to insert.  insertRow cannot exceed maximum row
@@ -110,7 +110,7 @@ public class UpdateSpreadsheet extends Authentication {
                     .setUpdateSheetProperties(new UpdateSheetPropertiesRequest()
                             .setProperties(new SheetProperties()
                                     .setSheetId(0)
-                                    .setTitle("Attendance"))
+                                    .setTitle("Attendance: " + courseTitle))
                             .setFields("title")));
 
 
@@ -156,12 +156,12 @@ public class UpdateSpreadsheet extends Authentication {
         List<Request> requests = new ArrayList<>();
 
         // Call to google API for request and update
-        requests.add(new Request()
-                .setUpdateSheetProperties(new UpdateSheetPropertiesRequest()
-                        .setProperties(new SheetProperties()
-                                .setSheetId(0)
-                                .setTitle("Attendance"))
-                        .setFields("title")));
+//        requests.add(new Request()
+//                .setUpdateSheetProperties(new UpdateSheetPropertiesRequest()
+//                        .setProperties(new SheetProperties()
+//                                .setSheetId(0)
+//                                .setTitle("Attendance"))
+//                        .setFields("title")));
 
 
         // Update spreadsheet by appending the new information below the current row
