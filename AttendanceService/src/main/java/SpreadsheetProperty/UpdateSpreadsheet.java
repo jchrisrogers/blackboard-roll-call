@@ -75,7 +75,7 @@ public class UpdateSpreadsheet extends Authentication {
      * @throws IOException
      * @throws ServiceException
      */
-    public void updateSheet(String username, String id)
+    public void updateAttendance(String username, String id)
             throws IOException, ServiceException, URISyntaxException {
 
         // The row that we want to update.  insertRow cannot exceed maximum row
@@ -101,10 +101,12 @@ public class UpdateSpreadsheet extends Authentication {
 
 
             // If both "Last Access" and "Attendance" header are missing
-            // Insert "Last Access" and "Attendance" header to the right most of the spreadsheet
+            // Insert "Last Access" and "Attendance" column header to the right most position of the spreadsheet
             insertAccessAndAttendanceHeader(attendanceColumn);
 
             updateAccessColumn(updateRow, attendanceColumn);
+
+            // After the "Last Access" was inserted and updated. Increment the column by one to update the "Attendance" header column
             attendanceColumn++;
 
         }
@@ -181,10 +183,10 @@ public class UpdateSpreadsheet extends Authentication {
             throws IOException {
 
 
-        // update spreadsheet by appending the new information below the current row
+
         List<CellData> values = new ArrayList<>();
 
-        // Add the time last access by student
+        // Update the time last access by student
         values.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
                         .setStringValue(CURRENT_DATE)));
@@ -223,13 +225,16 @@ public class UpdateSpreadsheet extends Authentication {
             throws IOException {
 
 
-        // Update spreadsheet by appending the new information below the current row
+
         List<CellData> values = new ArrayList<>();
 
 
+        // Add "Attendance" header column
         values.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
                         .setStringValue("Attendance on: " + CURRENT_DATE)));
+
+
         requests.add(new Request()
                 .setUpdateCells(new UpdateCellsRequest()
                         .setStart(new GridCoordinate()
@@ -239,6 +244,7 @@ public class UpdateSpreadsheet extends Authentication {
                         .setRows(Arrays.asList(
                                 new RowData().setValues(values)))
                         .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+
 
         // Final call to publish the updated sheet to google drive
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
@@ -342,7 +348,7 @@ public class UpdateSpreadsheet extends Authentication {
     }
 
 
-    
+
 //    public static void main(String agv[]) throws IOException, ServiceException, URISyntaxException {
 //
 //

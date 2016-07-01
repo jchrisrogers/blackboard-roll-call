@@ -61,8 +61,8 @@ public class Professor extends HttpServlet {
                 "<BODY BGCOLOR=\"#FDF5E6\">\n" +
                 "<H1 ALIGN=\"CENTER\">" + title + "</H1>\n" +
                 "<UL>\n" +
-                "   <LI><B>size of data</B>: "
-                + professorData.size() + "\n" +
+                "   <LI><B>name</B>: "
+                + dataIn.get(0) + "\n" +
                 "   <LI><B>class and section #</B>: "
                 + dataIn.get(1) + "\n" +
                 "   <LI><B>passcode</B>: "

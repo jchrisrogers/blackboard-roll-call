@@ -59,7 +59,6 @@ class Authorization  {
 
     /**
      * Global instance of the scopes required by this quickstart.
-     * <p>
      * If modifying these scopes, delete your previously saved credentials
      * at ~/.credentials/sheets.googleapis.com-java-quickstart.json
      */
