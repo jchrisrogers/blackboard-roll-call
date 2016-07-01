@@ -34,7 +34,7 @@ public class Spreadsheet {
     /**
      * A request to a particular google spreadsheet
      **/
-    private static final List<Request> requests = new ArrayList<>();
+    private final List<Request> requests = new ArrayList<>();
 
     /**
      * Spreadsheet ID
@@ -62,7 +62,7 @@ public class Spreadsheet {
      * to minimize the amount of time invoking getSheetService()
      * from mypackage.SpreadsheetProperty.Authorization class
      */
-    protected static Sheets SHEET_SERVICE;
+    static Sheets SHEET_SERVICE;
 
     static {
         try {
@@ -91,7 +91,7 @@ public class Spreadsheet {
     /**
      * Default constructor, doesn't do anything
      **/
-    public Spreadsheet() {
+    Spreadsheet() {
         // Empty
     }
 
@@ -99,25 +99,25 @@ public class Spreadsheet {
     /**
      * Return spreadsheet ID
      */
-    protected static String getSpreadsheetID() {
+    String getSpreadsheetID() {
         return spreadsheetID;
     }
 
     /**
      * Return total rows and columns
      */
-    protected static int getRows() {
+    int getMaxRows() {
         return rows;
     }
 
-    protected static int getCols() {
+    int getMaxCols() {
         return cols;
     }
 
     /**
      * Return URL Feed
      */
-    protected static String getUrlFeed() {
+    String getUrlFeed() {
         return url_feed;
     }
 
@@ -125,7 +125,7 @@ public class Spreadsheet {
     /**
      * Set the course title to the spreadsheet
      */
-    public static void setCourseTitle(String courseTitle) {
+    public void setCourseTitle(String courseTitle) {
 
         // Call to google API for request and update
         requests.add(new Request()
@@ -139,7 +139,7 @@ public class Spreadsheet {
     /**
      * Return the request if called upon
      **/
-    protected static List<Request> getRequest() {
+    List<Request> getRequest() {
         return requests;
     }
 
@@ -152,7 +152,7 @@ public class Spreadsheet {
      *
      * @throws IOException
      */
-    private static int totalRow()
+    private int totalRow()
             throws ServiceException, IOException, URISyntaxException {
 
 
@@ -178,7 +178,7 @@ public class Spreadsheet {
      *
      * @throws IOException
      */
-    private static int totalCol()
+    private  int totalCol()
             throws ServiceException, IOException {
 
         // Return the total of columns
@@ -189,7 +189,7 @@ public class Spreadsheet {
     /**
      * Get the list entry of all the row in the spreadsheet
      */
-    protected static List<ListEntry> getListEntry() throws IOException, ServiceException {
+    List<ListEntry> getListEntry() throws IOException, ServiceException {
 
 
         // Define URL to request
@@ -212,10 +212,15 @@ public class Spreadsheet {
     /**
      * Get the row header of the spreadsheet
      */
-    protected static Set<String> getHeaderRow() throws IOException, ServiceException {
+    Set<String> getHeaderRow() throws IOException, ServiceException {
 
         // Return access to that sheet
         return getListEntry().get(0).getCustomElements().getTags();
 
     }
+
+//    public static void main(String arg[]) throws IOException, ServiceException, URISyntaxException {
+//        System.out.println(new Spreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").getMaxCols());
+//    }
+
 }

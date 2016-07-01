@@ -23,7 +23,7 @@ import java.util.List;
 class Authorization  {
 
     /**
-     * Default constructor
+     * Default constructor, doesn't do anything
      */
     public Authorization() {}
 
@@ -82,10 +82,10 @@ class Authorization  {
      * @return an authorized Credential object.
      * @throws IOException
      */
-    public static Credential authorize() throws IOException {
+    private static Credential authorize() throws IOException {
         // Load client secrets.
         InputStream in = new FileInputStream("/Users/TinTin/IdeaProjects/application/AttendanceService/src/main/resources/client_secret.json");
-        // SheetsQuickstart.class.getResourceAsStream("/client_secret.json");
+
         GoogleClientSecrets clientSecrets =
                 GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
@@ -109,7 +109,7 @@ class Authorization  {
      * @return an authorized Sheets API client service
      * @throws IOException
      */
-    public static Sheets getSheetsService() throws IOException {
+    static Sheets getSheetsService() throws IOException {
         Credential credential = authorize();
         return new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)

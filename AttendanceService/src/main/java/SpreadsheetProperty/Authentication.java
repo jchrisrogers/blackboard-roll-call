@@ -30,7 +30,7 @@ public class Authentication extends Spreadsheet {
 
 
 
-    /** A default constructor **/
+    /** A defined constructor **/
     public Authentication(String spreadsheetID)
             throws IOException, ServiceException, URISyntaxException {
         super(spreadsheetID);
@@ -38,7 +38,7 @@ public class Authentication extends Spreadsheet {
 
 
     /** Default constructor, doesn't do anything **/
-    public Authentication() throws IOException, ServiceException {
+    Authentication() throws IOException, ServiceException {
         // Empty
     }
 
@@ -58,10 +58,11 @@ public class Authentication extends Spreadsheet {
         int index;
 
 
-        // Make sure student input first and last name. This block will try to split name variable
-        // into first name and last name. Making sure there is blank space separating first and last name
+
         // Check if student ID and the name input from user is valid. ID will be checked first then user's name
-        if ((index = isIDValid(id)) < getRows() && index >= 0 &&
+        // isIDValid() will check for valid id first. If it's found within the spreadsheet continue to validate for user's input username
+        // If username is valid then return the row index. Otherwise, return -1 since there is no exist row with that username
+        if ((index = isIDValid(id)) < getMaxRows() && index >= 0 &&
                 listEntry.get(index).getPlainTextContent().split(",")[getUsernameIndex()-1].split(":\\s")[1].equals(username)) {
 
             return index;
@@ -74,8 +75,12 @@ public class Authentication extends Spreadsheet {
 
 
     /**
-     * Check for ID if it matches
-     * with the student ID and the user input
+     * Check the ID from user input whether
+     * it matches with the one from the
+     * spreadsheet. If matches, return the
+     * row that matches and used it for
+     * updating within that particular row.
+     * Otherwise, return -1 indicating an error
      * @throws IOException
      * @throws ServiceException
      */
@@ -88,18 +93,41 @@ public class Authentication extends Spreadsheet {
         // Traverse the entry of each array. Since each student belong to an Array
         for (ListEntry list : listEntry) {
             // Since the ID field is "student: id" so we need to split the string to get the "id" part only and not the "student:"
-            if (list.getPlainTextContent().split(",")[getiDIndex() - 1].split(":\\s")[1] .equals(id)) {
-                return idFound;
+            if (list.getPlainTextContent().split(",")[getidIndex() - 1].split(":\\s")[1] .equals(id)) {
+                break;
             }
             idFound++;
         }
 
-        return -1;
+        return idFound >= 0 ? idFound : -1;  // If student ID can't be found, return -1
     }
 
 
     /**
-     * Cell query to get the index of username and student ID
+     * Look for the column with the name "Access"
+     * that indicate the last time student logged in
+     * @return
+     */
+
+    int getAccessIndex()
+    throws IOException, ServiceException {
+
+
+        int index = 0;
+        for (String element : headerRow) {
+            if (element.matches("lastaccess"))   // Need to have the pattern access or Access in it. Otherwise, the program can't detect it so it will assume that column is missing
+                break;
+            index++;
+        }
+
+        // Compare the index to the maximum column of the spreadsheet. If it exceeds the maximum, means that it could not find the desire column
+        return index < getMaxCols() ? index : -1;
+
+    }
+
+
+    /**
+     * Cell query to get the index of username column. Assume user input Username column in a random order
      */
     private int getUsernameIndex() throws IOException, ServiceException {
         int index = 0;
@@ -111,20 +139,20 @@ public class Authentication extends Spreadsheet {
         return index;
     }
 
-
-    private int getiDIndex() throws IOException, ServiceException {
+    /**
+     * Cell query to get the index of student id column. Assume user input ID column in a random order
+     */
+    private int getidIndex() throws IOException, ServiceException {
         int index = 0;
         for (String element : headerRow) {
-            if (element.matches("studentid"))
+            if (element.matches(".*[id]$"))   // Need to have the pattern id or ID in it. Otherwise, the program can't detect an id column so it will assume that column is missing
                 break;
             index++;
         }
         return index;
     }
 
-//    public static void main(String argv[]) throws IOException, ServiceException, URISyntaxException {
-//        System.out.println(new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("sasonbaghdadi", "216722988"));
-//    }
+
 
 
 }

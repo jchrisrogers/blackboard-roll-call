@@ -66,15 +66,17 @@ public class Student extends HttpServlet {
                     /**
                      * If the passcode is valid then check for student name and id to
                      * see whether it is in the spreadsheet. If they are already in the
-                     * spreadsheet then update their attendance. Otherwise, prompt an
-                     * error page (Error.jsp)
+                     * spreadsheet then update their attendance. Otherwise, prompt an error page (Error.jsp).
+                     * isInputValid() will check if there is a particular username or id within that row
+                     * It will return any value that is return than or equal 0 indicating that there exist
+                     * a username and student id in the spreadsheet. Otherwise, it will return -1 indicating an error
                      */
                     if (new Authentication(spreadsheetID).isInputValid(username, studentId) >= 0) {
                         String courseTitle = Professor.getCourseTitle(passcode);
                         displayConfirmation(response, request, username, spreadsheetID, studentId, courseTitle);
                     } else {
-                        RequestDispatcher rd = getServletContext().getRequestDispatcher("/Error.jsp");
-                        rd.forward(request, response);
+                        RequestDispatcher rd = getServletContext().getRequestDispatcher("/Error.jsp");  // No username or id exist within any particular row, so prompt an error page. Declaring a service request
+                        rd.forward(request, response);      // forward a request to that page
                     }
                 } catch (ServiceException e) {
                     e.printStackTrace();
@@ -99,12 +101,14 @@ public class Student extends HttpServlet {
         // Update spreadsheet with the corresponding passcode input by student
 
         RequestDispatcher rd;
+        // Set attribute to deploy them to another page, which is the Success.jsp file
         request.setAttribute("username", username);
         request.setAttribute("spreadsheetID", spreadsheetID);
         request.setAttribute("studentID", studentID);
         request.setAttribute("courseTitle", courseTitle);
-        rd = getServletContext().getRequestDispatcher("/Success.jsp");
-        rd.forward(request, response);
+
+        rd = getServletContext().getRequestDispatcher("/Success.jsp");  // Prompt a service request
+        rd.forward(request, response);  // Forward that request
 
     }
 

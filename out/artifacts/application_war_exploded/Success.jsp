@@ -27,6 +27,7 @@
 <body>
 
 Thank you for your submission. An email confirmation has been sent to <%=request.getAttribute("username") + "@csus.edu"%>
+<%=request.getAttribute("courseTitle")%>
 <%
 
     String username = (String)request.getAttribute("username");
@@ -37,10 +38,12 @@ Thank you for your submission. An email confirmation has been sent to <%=request
 
     try {
         try {
-            new Spreadsheet(spreadsheetID);                                 // Create a new spreadsheet with properties such as row, column
-            Spreadsheet.setCourseTitle(courseTitle);                        // Set a title for that spreadsheet
-            new UpdateSpreadsheet().updateSheet(username, studentID);       // Update the spreadsheet
-           // new SendMail(username, courseTitle);                            // Send email notification
+            // Create a new spreadsheet with properties such as row, column and set the title for that spreadsheet
+            new Spreadsheet(spreadsheetID).setCourseTitle(courseTitle);
+            // Update the spreadsheet
+            new UpdateSpreadsheet().updateSheet(username, studentID);
+            // Send email notification
+           // new SendMail(username, courseTitle);
         } catch (ServiceException e) {
             e.printStackTrace();
         }

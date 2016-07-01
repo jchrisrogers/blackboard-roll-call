@@ -14,17 +14,17 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
+/**
+ * Created by TinTin on 6/29/16.
+ * A class that will update the
+ * spreadsheet
+ */
 
 
 public class UpdateSpreadsheet extends Authentication {
 
 
-
     /*****************************************************************************************************/
-
-
-
 
 
     /**
@@ -34,17 +34,22 @@ public class UpdateSpreadsheet extends Authentication {
      * change overtime since we are adding
      * data in a horizontal position.
      */
-    private static int insertColumn;
+    private static int attendanceColumn;
 
 
-    /** Current Date **/
+    /**
+     * Current Date
+     **/
     private static String CURRENT_DATE = new java.util.Date().toString();
 
 
+    /**
+     * Request service for google spreadsheet
+     */
+    private final List<Request> requests = getRequest(); // Define requests for google API to update the spreadsheet. The getRequest() method is inherited from Spreadsheet Class
+
 
     /*****************************************************************************************************/
-
-
 
 
     /**
@@ -55,14 +60,17 @@ public class UpdateSpreadsheet extends Authentication {
     public UpdateSpreadsheet()
             throws IOException, ServiceException, URISyntaxException {
 
-        insertColumn = getCols();
+        attendanceColumn = getMaxCols();       // get the current column of the spreadsheet. Inherited from Spreadsheet Property
     }
-
-
 
 
     /**
      * Update google spreadsheet
+     * Puting a checkmark "yes" within
+     * a particular row that matches
+     * the student's username and id
+     * indicating their presence
+     *
      * @param username
      * @throws IOException
      * @throws ServiceException
@@ -70,89 +78,158 @@ public class UpdateSpreadsheet extends Authentication {
     public void updateSheet(String username, String id)
             throws IOException, ServiceException, URISyntaxException {
 
-        // The new row we want to insert.  insertRow cannot exceed maximum row
-        // If input is valid then return the desired row. Otherwise return -1
-        int insertRow = isInputValid(username, id);
+        // The row that we want to update.  insertRow cannot exceed maximum row
+        // If input is valid then return the row we want to update. Otherwise return -1
+        // isInputValid() will check if there is a particular username or id within that row
+        int updateRow = isInputValid(username, id);
 
 
-        // An empty column is the column that missing a value in a specific cell.
-        // Otherwise, the column is completely filled
-        if (!emptyColumn()) {
-            insertHeader(insertColumn);
-            System.out.println("slfkj");
+        /**
+         * Look for the column with the name "Last Access" or "Access"
+         * If it is already created or not. If not then insert it into the spreadsheet.
+         * Otherwise dont do anything. A value accessColumn = -1 means there is no such
+         * column with the name "Last Access" or "Access"
+         * **/
+        int accessColumn = getAccessIndex();
+
+
+
+        /** An empty column is the column that missing a value in a specific cell. Otherwise, the column is filled **/
+
+        // If there is no "Attendance" and "Last Access" header column
+        if (!emptyColumn() && accessColumn < 0) {
+
+
+            // If both "Last Access" and "Attendance" header are missing
+            // Insert "Last Access" and "Attendance" header to the right most of the spreadsheet
+            insertAccessAndAttendanceHeader(attendanceColumn);
+
+            updateAccessColumn(updateRow, attendanceColumn);
+            attendanceColumn++;
+
         }
+        // If there is no "Attendance" header but there is a "Last Access" header
+        else if (!emptyColumn() && accessColumn >= 0) {
+
+
+            // If only "Attendance" header is missing but there is already a "Last Access" column
+            insertAttendanceHeader(attendanceColumn);
+
+            // Update the last time student login to the system
+            updateAccessColumn(updateRow, accessColumn);
+
+        }
+        // If there exist both "Attendance" and "Last Access" header
         else {
+
+
             // If the new header is added,
-            // CURRENT_COLUMN will be incremented by one so
+            // current will be incremented by one so
             // We need to minus one so that it will stay in the
             // proper column throughout the entire process
-            // of filling up the column field until
-            // it is not empty anymore
-            insertColumn = insertColumn - 1;
+            // of filling up the column until itsn't empty anymore
+            attendanceColumn = attendanceColumn - 1;
+
+            // Update the last time student login to the system
+            updateAccessColumn(updateRow, accessColumn);
+
         }
 
 
-        // Check for user input. Make sure user input first and last name with their correct ID number
-        // Make sure to insert to newColumn only. If all cells are fill then totalCol() == newColumn()
-        // insertRow cannot exceed the total row in the spreadsheet.
-        // If insertRow is less than 0, that means we have an error
+        /** update spreadsheet by putting a checkmark "yes" to an appropriate row and column of a particular student **/
+        List<CellData> values = new ArrayList<>();
 
-        if (insertRow < getRows() && insertRow >= 0) {
-
-            // Define requests for google API to update the spreadsheet. The getRequest() method is inherited from Spreadsheet Class
-            List<Request> requests = getRequest();
+        // Add checkmark yes to the header column "Attendance"
+        values.add(new CellData()
+                .setUserEnteredValue(new ExtendedValue()
+                        .setStringValue("yes")));
 
 
-            // update spreadsheet by appending the new information below the current row
-            List<CellData> values = new ArrayList<>();
+        // Add request for check mark "yes"
+        requests.add(new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(0)
+                                .setRowIndex(updateRow + 1)
+                                .setColumnIndex(attendanceColumn))
+                        .setRows(Arrays.asList(
+                                new RowData().setValues(values)))
+                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
 
-            // Add checkmark yes to the cell
-            values.add(new CellData()
-                    .setUserEnteredValue(new ExtendedValue()
-                            .setStringValue("yes")));
-            requests.add(new Request()
-                    .setUpdateCells(new UpdateCellsRequest()
-                            .setStart(new GridCoordinate()
-                                    .setSheetId(0)
-                                    .setRowIndex(insertRow + 1)
-                                    .setColumnIndex(insertColumn))
-                            .setRows(Arrays.asList(
-                                    new RowData().setValues(values)))
-                            .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
 
-            // Final call to publish the updated sheet to google drive
-            BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
-                    .setRequests(requests);
-            SHEET_SERVICE.spreadsheets().batchUpdate(getSpreadsheetID(), batchUpdateRequest)
-                    .execute();
-        }
+        // Final call to publish the updated sheet to google drive
+        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
+                .setRequests(requests);
+        SHEET_SERVICE.spreadsheets().batchUpdate(getSpreadsheetID(), batchUpdateRequest)
+                .execute();
+
+        // }
 
     }
 
 
     /**
-     * Insert header name
-     * to Spreadsheet
+     * Continuously update the "Last Access" column
+     * corresponded to the right row whenever a student login
+     *
+     * @param updateRow
+     * @param accessColumn
      * @throws IOException
-     * @throws ServiceException
      */
 
-    private static void insertHeader(int column)
-            throws IOException, ServiceException {
+    private void updateAccessColumn(int updateRow, int accessColumn)
+            throws IOException {
 
 
-        // Define requests for google API to update the spreadsheet
-        List<Request> requests = getRequest();
+        // update spreadsheet by appending the new information below the current row
+        List<CellData> values = new ArrayList<>();
 
+        // Add the time last access by student
+        values.add(new CellData()
+                .setUserEnteredValue(new ExtendedValue()
+                        .setStringValue(CURRENT_DATE)));
+
+
+        // Add request for Access time
+        requests.add(new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(0)
+                                .setRowIndex(updateRow + 1)
+                                .setColumnIndex(accessColumn))
+                        .setRows(Arrays.asList(
+                                new RowData().setValues(values)))
+                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+
+        // Final call to publish the updated sheet to google drive
+        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
+                .setRequests(requests);
+        SHEET_SERVICE.spreadsheets().batchUpdate(getSpreadsheetID(), batchUpdateRequest)
+                .execute();
+    }
+
+
+    /**
+     * Insert attendance header everytime the
+     * entire column has been fill and the maximum
+     * row has been reach. Simply insert a new "Attendance"
+     * header to the right most column
+     *
+     * @param column
+     * @throws IOException
+     */
+
+    private void insertAttendanceHeader(int column)
+            throws IOException {
 
 
         // Update spreadsheet by appending the new information below the current row
         List<CellData> values = new ArrayList<>();
 
-        // Add new header
+
         values.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue(CURRENT_DATE)));
+                        .setStringValue("Attendance on: " + CURRENT_DATE)));
         requests.add(new Request()
                 .setUpdateCells(new UpdateCellsRequest()
                         .setStart(new GridCoordinate()
@@ -169,10 +246,55 @@ public class UpdateSpreadsheet extends Authentication {
         SHEET_SERVICE.spreadsheets().batchUpdate(getSpreadsheetID(), batchUpdateRequest)
                 .execute();
 
+
     }
 
 
+    /**
+     * Insert an "Attendance" and "Last Access"
+     * header column if there exist none in the Spreadsheet
+     *
+     * @throws IOException
+     * @throws ServiceException
+     */
 
+    private void insertAccessAndAttendanceHeader(int column)
+            throws IOException, ServiceException {
+
+
+        // Update spreadsheet by appending the new information below the current row
+        List<CellData> values = new ArrayList<>();
+
+        // Add new "Last Access" header
+        values.add(new CellData()
+                .setUserEnteredValue(new ExtendedValue()
+                        .setStringValue("Last Access")));
+
+
+        // Add new "Attendance" header
+        values.add(new CellData()
+                .setUserEnteredValue(new ExtendedValue()
+                        .setStringValue("Attendance")));
+
+
+        requests.add(new Request()
+                .setUpdateCells(new UpdateCellsRequest()
+                        .setStart(new GridCoordinate()
+                                .setSheetId(0)
+                                .setRowIndex(0)
+                                .setColumnIndex(column))
+                        .setRows(Arrays.asList(
+                                new RowData().setValues(values)))
+                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+
+
+        // Final call to publish the updated sheet to google drive
+        BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
+                .setRequests(requests);
+        SHEET_SERVICE.spreadsheets().batchUpdate(getSpreadsheetID(), batchUpdateRequest)
+                .execute();
+
+    }
 
 
     /**
@@ -181,11 +303,10 @@ public class UpdateSpreadsheet extends Authentication {
      * we have to check to see whether each cell
      * within that column is empty.
      */
-    private static boolean emptyColumn()
+    private boolean emptyColumn()
             throws ServiceException, IOException, URISyntaxException {
         return isEmptyField();  // Helper function checking each field
     }
-
 
 
     /**
@@ -197,7 +318,7 @@ public class UpdateSpreadsheet extends Authentication {
      * an empty field. Otherwise
      * the entire row has been filled
      */
-    private static boolean isEmptyField()
+    private boolean isEmptyField()
             throws IOException, ServiceException, URISyntaxException {
 
         SpreadsheetService spreadsheetService = new SpreadsheetService("Attendance");
@@ -205,7 +326,6 @@ public class UpdateSpreadsheet extends Authentication {
         URL urlSpreadsheet = new URL(getUrlFeed());
         SpreadsheetFeed spreadsheetFeed = spreadsheetService.getFeed(urlSpreadsheet, SpreadsheetFeed.class);
         SpreadsheetEntry spreadsheetEntry = spreadsheetFeed.getEntries().get(0);
-
 
 
         ListFeed listFeed = spreadsheetService.getFeed(spreadsheetEntry.getWorksheetFeedUrl(), ListFeed.class);
@@ -219,6 +339,50 @@ public class UpdateSpreadsheet extends Authentication {
         }
 
         return false;
+    }
+
+    public static void main(String agv[]) throws IOException, ServiceException, URISyntaxException {
+
+
+
+
+
+        if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("tuyenle", "218694867") >= 0) {
+
+            Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
+            spreadsheet.setCourseTitle("CSC 130 section 101");
+            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
+
+            updateSpreadsheet.updateSheet("tuyenle", "218694867");
+
+
+        }
+
+        if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("andrewobrigewit", "218690707") >= 0) {
+
+            Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
+            spreadsheet.setCourseTitle("CSC 130 section 101");
+            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
+            updateSpreadsheet.updateSheet("andrewobrigewit", "218690707");
+        }
+
+
+        if (new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("sasonbaghdadi", "216722988") >= 0) {
+
+            Spreadsheet spreadsheet1 = new Spreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
+            spreadsheet1.setCourseTitle("CSC 130 section 200");
+            UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet();
+            updateSpreadsheet1.updateSheet("sasonbaghdadi", "216722988");
+        }
+
+        if (new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("ezaki", "210216160") >= 0) {
+
+            Spreadsheet spreadsheet1 = new Spreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
+            spreadsheet1.setCourseTitle("CSC 130 section 200");
+            UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet();
+            updateSpreadsheet1.updateSheet("ezaki", "210216160");
+        }
+
     }
 
 
