@@ -31,10 +31,6 @@ public class Spreadsheet {
     private static final SpreadsheetService service = new SpreadsheetService("Attendance");
 
 
-    /**
-     * A request to a particular google spreadsheet
-     **/
-    private final List<Request> requests = new ArrayList<>();
 
     /**
      * Spreadsheet ID
@@ -122,26 +118,7 @@ public class Spreadsheet {
     }
 
 
-    /**
-     * Set the course title to the spreadsheet
-     */
-    public void setCourseTitle(String courseTitle) {
 
-        // Call to google API for request and update
-        requests.add(new Request()
-                .setUpdateSheetProperties(new UpdateSheetPropertiesRequest()
-                        .setProperties(new SheetProperties()
-                                .setSheetId(0)
-                                .setTitle(courseTitle))
-                        .setFields("title")));
-    }
-
-    /**
-     * Return the request if called upon
-     **/
-    List<Request> getRequest() {
-        return requests;
-    }
 
 
     /**

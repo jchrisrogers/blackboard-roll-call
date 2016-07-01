@@ -39,9 +39,13 @@ Thank you for your submission. An email confirmation has been sent to <%=request
     try {
         try {
             // Create a new spreadsheet with properties such as row, column and set the title for that spreadsheet
-            new Spreadsheet(spreadsheetID).setCourseTitle(courseTitle);
+            Spreadsheet spreadsheet = new Spreadsheet(spreadsheetID);
+            spreadsheet.setCourseTitle(courseTitle);
+
             // Update the spreadsheet
-            new UpdateSpreadsheet().updateSheet(username, studentID);
+            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
+            updateSpreadsheet.updateAttendance(username, studentID);
+
             // Send email notification
            // new SendMail(username, courseTitle);
         } catch (ServiceException e) {
