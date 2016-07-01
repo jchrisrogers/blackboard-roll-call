@@ -274,7 +274,7 @@ public class UpdateSpreadsheet extends Authentication {
         // Add new "Attendance" header
         values.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue("Attendance")));
+                        .setStringValue("Attendance " + CURRENT_DATE)));
 
 
         requests.add(new Request()
@@ -341,49 +341,50 @@ public class UpdateSpreadsheet extends Authentication {
         return false;
     }
 
-    public static void main(String agv[]) throws IOException, ServiceException, URISyntaxException {
 
-
-
-
-
-        if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("tuyenle", "218694867") >= 0) {
-
-            Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
-            spreadsheet.setCourseTitle("CSC 130 section 101");
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
-
-            updateSpreadsheet.updateSheet("tuyenle", "218694867");
-
-
-        }
-
-        if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("andrewobrigewit", "218690707") >= 0) {
-
-            Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
-            spreadsheet.setCourseTitle("CSC 130 section 101");
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
-            updateSpreadsheet.updateSheet("andrewobrigewit", "218690707");
-        }
-
-
-        if (new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("sasonbaghdadi", "216722988") >= 0) {
-
-            Spreadsheet spreadsheet1 = new Spreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
-            spreadsheet1.setCourseTitle("CSC 130 section 200");
-            UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet();
-            updateSpreadsheet1.updateSheet("sasonbaghdadi", "216722988");
-        }
-
-        if (new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("ezaki", "210216160") >= 0) {
-
-            Spreadsheet spreadsheet1 = new Spreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
-            spreadsheet1.setCourseTitle("CSC 130 section 200");
-            UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet();
-            updateSpreadsheet1.updateSheet("ezaki", "210216160");
-        }
-
-    }
+    
+//    public static void main(String agv[]) throws IOException, ServiceException, URISyntaxException {
+//
+//
+//        if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("sasonbaghdadi", "216722988") >= 0) {
+//
+//            Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
+//            spreadsheet.setCourseTitle("CSC 130 section 101");
+//            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
+//
+//            updateSpreadsheet.updateSheet("sasonbaghdadi", "216722988");
+//
+//
+//        }
+//
+//        if (new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("tuyenle", "218694867") >= 0) {
+//
+//            Spreadsheet spreadsheet1 = new Spreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
+//            spreadsheet1.setCourseTitle("CSC 130 section 200");
+//            UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet();
+//            updateSpreadsheet1.updateSheet("tuyenle", "218694867");
+//        }
+//
+//
+//        if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("dallasberry", "218676836") >= 0) {
+//
+//            Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
+//            spreadsheet.setCourseTitle("CSC 130 section 101");
+//            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
+//            updateSpreadsheet.updateSheet("dallasberry", "218676836");
+//        }
+//
+//
+//
+//        if (new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("ezaki", "210216160") >= 0) {
+//
+//            Spreadsheet spreadsheet1 = new Spreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
+//            spreadsheet1.setCourseTitle("CSC 130 section 200");
+//            UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet();
+//            updateSpreadsheet1.updateSheet("ezaki", "210216160");
+//        }
+//
+//    }
 
 
 }
