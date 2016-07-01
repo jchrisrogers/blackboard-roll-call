@@ -32,15 +32,12 @@ Thank you for your submission. An email confirmation has been sent to <%=request
 
     String username = (String)request.getAttribute("username");
     String studentID =  (String)request.getAttribute("studentID");
-    String spreadsheetID =  (String)request.getAttribute("spreadsheetID");
     String courseTitle = (String)request.getAttribute("courseTitle");
 
 
     try {
         try {
             // Create a new spreadsheet with properties such as row, column and set the title for that spreadsheet
-            Spreadsheet spreadsheet = new Spreadsheet(spreadsheetID);
-
 
             // Update the spreadsheet
             UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
