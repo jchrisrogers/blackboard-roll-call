@@ -155,7 +155,7 @@ public class Spreadsheet {
      *
      * @throws IOException
      */
-    private  int totalCol()
+    private int totalCol()
             throws ServiceException, IOException {
 
         // Return the total of columns

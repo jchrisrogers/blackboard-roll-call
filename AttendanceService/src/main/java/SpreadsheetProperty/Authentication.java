@@ -6,6 +6,7 @@ import com.google.gdata.data.spreadsheet.*;
 import com.google.gdata.util.ServiceException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -24,7 +25,8 @@ public class Authentication extends Spreadsheet {
     private List<ListEntry> listEntry = getListEntry();
     private Set<String> headerRow = getHeaderRow();
 
-
+    /** Row that we want to update **/
+    private static int updateRow;
 
     /*****************************************************************************************************/
 
@@ -54,22 +56,25 @@ public class Authentication extends Spreadsheet {
     public int isInputValid(String username, String id)
             throws ServiceException, IOException, URISyntaxException {
 
-        // Index to keep track of where to check "yes" to the corresponding first and last name at the correct row
-        int index;
 
 
 
         // Check if student ID and the name input from user is valid. ID will be checked first then user's name
         // isIDValid() will check for valid id first. If it's found within the spreadsheet continue to validate for user's input username
         // If username is valid then return the row index. Otherwise, return -1 since there is no exist row with that username
-        if ((index = isIDValid(id)) < getMaxRows() && index >= 0 &&
-                listEntry.get(index).getPlainTextContent().split(",")[getUsernameIndex()-1].split(":\\s")[1].equals(username)) {
+        if ((updateRow = isIDValid(id)) < getMaxRows() && updateRow >= 0 &&
+                listEntry.get(updateRow).getPlainTextContent().split(",")[getUsernameHeader()-1].split(":\\s")[1].equals(username)) {
 
-            return index;
+            return updateRow;
         }
         else {
             return -1;  // Indicate out of bound rows
         }
+    }
+
+
+    int getUpdateRow() {
+        return updateRow;
     }
 
 
@@ -89,15 +94,16 @@ public class Authentication extends Spreadsheet {
             throws IOException, ServiceException, URISyntaxException {
 
         int idFound = 0;     // A student ID found within a particular array. The total numbers of array really depends on how many student we have total
-
+        int idIndex = getidIndex();
         // Traverse the entry of each array. Since each student belong to an Array
         for (ListEntry list : listEntry) {
             // Since the ID field is "student: id" so we need to split the string to get the "id" part only and not the "student:"
-            if (list.getPlainTextContent().split(",")[getidIndex() - 1].split(":\\s")[1] .equals(id)) {
+            if (list.getPlainTextContent().split(",")[idIndex - 1].split(":\\s")[1] .equals(id)) {
                 break;
             }
             idFound++;
         }
+
 
         return idFound >= 0 ? idFound : -1;  // If student ID can't be found, return -1
     }
@@ -109,7 +115,7 @@ public class Authentication extends Spreadsheet {
      * @return
      */
 
-    int getAccessIndex()
+    int getAccessHeader()
     throws IOException, ServiceException {
 
 
@@ -121,7 +127,7 @@ public class Authentication extends Spreadsheet {
         }
 
         // Compare the index to the maximum column of the spreadsheet. If it exceeds the maximum, means that it could not find the desire column
-        return index < getMaxCols() ? index : -1;
+        return index;
 
     }
 
@@ -129,7 +135,7 @@ public class Authentication extends Spreadsheet {
     /**
      * Cell query to get the index of username column. Assume user input Username column in a random order
      */
-    private int getUsernameIndex() throws IOException, ServiceException {
+    private int getUsernameHeader() throws IOException, ServiceException {
         int index = 0;
         for (String element : headerRow) {
             if (element.equals("username"))
@@ -149,6 +155,7 @@ public class Authentication extends Spreadsheet {
                 break;
             index++;
         }
+
         return index;
     }
 

@@ -40,7 +40,7 @@ public class UpdateSpreadsheet extends Authentication {
     /**
      * Current Date
      **/
-    private static String CURRENT_DATE = new java.util.Date().toString();
+    private  String CURRENT_DATE = new java.util.Date().toString();
 
 
     /**
@@ -81,7 +81,7 @@ public class UpdateSpreadsheet extends Authentication {
         // The row that we want to update.  insertRow cannot exceed maximum row
         // If input is valid then return the row we want to update. Otherwise return -1
         // isInputValid() will check if there is a particular username or id within that row
-        int updateRow = isInputValid(username, id);
+        int updateRow = getUpdateRow();
 
 
         /**
@@ -90,7 +90,7 @@ public class UpdateSpreadsheet extends Authentication {
          * Otherwise dont do anything. A value accessColumn = -1 means there is no such
          * column with the name "Last Access" or "Access"
          * **/
-        int accessColumn = getAccessIndex();
+        int accessColumn = getAccessHeader();
 
 
 
@@ -362,31 +362,31 @@ public class UpdateSpreadsheet extends Authentication {
     public static void main(String agv[]) throws IOException, ServiceException, URISyntaxException {
 
 
-        if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("sasonbaghdadi", "216722988") >= 0) {
+        if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("ezaki", "210216160") >= 0) {
 
-            Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
+           // Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
 
             UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
 
-            updateSpreadsheet.updateAttendance("tuyenle", "218694867");
+            updateSpreadsheet.updateAttendance("ezaki", "210216160");
 
 
         }
 
 
-        if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("jamesrogers", "218679878") >= 0) {
+        if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("ayl37", "212712657") >= 0) {
 
-            Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
+            //Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
 
             UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
-            updateSpreadsheet.updateAttendance("jamesrogers", "218679878");
+            updateSpreadsheet.updateAttendance("ayl37", "212712657");
         }
 
 
 
         if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("stevenxiong", "210809639") >= 0) {
 
-            Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
+           // Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
 
             UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
 
@@ -398,7 +398,7 @@ public class UpdateSpreadsheet extends Authentication {
 
         if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("dallasberry", "218676836") >= 0) {
 
-            Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
+        //    Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
 
             UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
             updateSpreadsheet.updateAttendance("dallasberry", "218676836");
@@ -409,7 +409,7 @@ public class UpdateSpreadsheet extends Authentication {
 
         if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("bhushanladde", "218706203") >= 0) {
 
-            Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
+          //  Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
 
             UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
 
@@ -421,7 +421,7 @@ public class UpdateSpreadsheet extends Authentication {
 
         if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("tuyenle", "218694867") >= 0) {
 
-            Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
+           // Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
 
             UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
             updateSpreadsheet.updateAttendance("tuyenle", "218694867");
@@ -431,7 +431,7 @@ public class UpdateSpreadsheet extends Authentication {
 
         if (new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("sasonbaghdadi", "216722988") >= 0) {
 
-            Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
+           // Spreadsheet spreadsheet = new Spreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
 
             UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
 
@@ -443,24 +443,24 @@ public class UpdateSpreadsheet extends Authentication {
 
 
 
-        if (new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("jamesrogers", "218679878") >= 0) {
+        if (new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("dallasberry", "218676836") >= 0) {
 
-            Spreadsheet spreadsheet1 = new Spreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
+           // Spreadsheet spreadsheet1 = new Spreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
 
             UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet();
-            updateSpreadsheet1.updateAttendance("jamesrogers", "218679878");
+            updateSpreadsheet1.updateAttendance("dallasberry", "218676836");
         }
 
 
 
 
 
-        if (new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("stevenxiong", "210809639") >= 0) {
+        if (new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("ayl37", "212712657") >= 0) {
 
-            Spreadsheet spreadsheet1 = new Spreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
+           // Spreadsheet spreadsheet1 = new Spreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
 
             UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet();
-            updateSpreadsheet1.updateAttendance("stevenxiong", "210809639");
+            updateSpreadsheet1.updateAttendance("ayl37", "212712657");
         }
 
     }
