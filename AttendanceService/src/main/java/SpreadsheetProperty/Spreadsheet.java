@@ -102,11 +102,11 @@ public class Spreadsheet {
     /**
      * Return total rows and columns
      */
-    int getMaxRows() {
+    public int getMaxRows() {
         return rows;
     }
 
-    int getMaxCols() {
+    public int getMaxCols() {
         return cols;
     }
 

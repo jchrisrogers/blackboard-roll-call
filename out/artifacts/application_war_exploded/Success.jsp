@@ -30,21 +30,17 @@ Thank you for your submission. An email confirmation has been sent to <%=request
 <%=request.getAttribute("courseTitle")%>
 <%
 
-    String username = (String)request.getAttribute("username");
-    String studentID =  (String)request.getAttribute("studentID");
-    String spreadsheetID =  (String)request.getAttribute("spreadsheetID");
+    int updateRow =  (Integer) request.getAttribute("updateRow");
     String courseTitle = (String)request.getAttribute("courseTitle");
 
 
     try {
         try {
             // Create a new spreadsheet with properties such as row, column and set the title for that spreadsheet
-            Spreadsheet spreadsheet = new Spreadsheet(spreadsheetID);
-            spreadsheet.setCourseTitle(courseTitle);
 
             // Update the spreadsheet
             UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
-            updateSpreadsheet.updateAttendance(username, studentID);
+            updateSpreadsheet.updateAttendance(updateRow);
 
             // Send email notification
            // new SendMail(username, courseTitle);

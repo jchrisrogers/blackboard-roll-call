@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -16,6 +17,7 @@ import java.util.List;
  */
 @WebServlet(name = "Professor", urlPatterns = {"/servlet/Professor"})
 public class Professor extends HttpServlet {
+
 
     /**
      * Private List data that store passcode and
@@ -28,7 +30,7 @@ public class Professor extends HttpServlet {
      * Accept professor's input when they
      * submit passcode and googlespread ID
      * @param request
-     * @param response
+     * @param  response
      * @throws ServletException
      * @throws IOException
      */
@@ -62,7 +64,7 @@ public class Professor extends HttpServlet {
                 "<H1 ALIGN=\"CENTER\">" + title + "</H1>\n" +
                 "<UL>\n" +
                 "   <LI><B>name</B>: "
-                + dataIn.get(0) + "\n" +
+                + Arrays.toString(professorData.toArray()) + "\n" +
                 "   <LI><B>class and section #</B>: "
                 + dataIn.get(1) + "\n" +
                 "   <LI><B>passcode</B>: "
@@ -74,20 +76,19 @@ public class Professor extends HttpServlet {
 
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-    }
 
 
     /**
      * Check if a certain passcode exist within
-     * Professors's database
+     * Professors's database. If passcode exist
+     * then return the spreadsheet id
      */
-    public static String passcodeExist(String passcode) {
+     static String passcodeExist(String passcode) {
 
         for (List list : professorData) {
-            if (list.get(2).equals(passcode))
-                return (String) list.get(3);        // Cast to string since list.get(3) returns an object
+            if (list.get(2).equals(passcode))       // Check if passcode exist
+                return (String) list.get(3);        // Return spreadsheet id
         }
         return "";      // Return an empty string if no passcode exist
     }
@@ -95,7 +96,7 @@ public class Professor extends HttpServlet {
     /**
      * Get the course and its section number
      */
-    public static String getCourseTitle(String passcode) {
+    static String getCourseTitle(String passcode) {
         for (List list : professorData) {
             if (list.get(2).equals(passcode)) {
                 return (String) list.get(1);    // Cast to string since list.get(1) returns an object
