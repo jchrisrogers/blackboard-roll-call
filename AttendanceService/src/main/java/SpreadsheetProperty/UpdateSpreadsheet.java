@@ -75,7 +75,7 @@ public class UpdateSpreadsheet extends Authentication {
      * @throws IOException
      * @throws ServiceException
      */
-    public void updateAttendance(int updateRow)
+    public void updateAttendance(int updateRow, String courseTitle)
             throws IOException, ServiceException, URISyntaxException {
 
 
@@ -89,12 +89,12 @@ public class UpdateSpreadsheet extends Authentication {
          * **/
         int accessColumn = getAccessHeader();
 
-        System.out.println(accessColumn + " " + updateRow + " " + attendanceColumn);
+
 
         /** An empty column is the column that missing a value in a specific cell. Otherwise, the column is filled **/
 
         // If there is no "Attendance" and "Last Access" header column
-        if (!emptyColumn() && accessColumn > getMaxCols()) {
+        if (!emptyColumn() && accessColumn >= getMaxCols()) {
 
 
             // If both "Last Access" and "Attendance" header are missing
@@ -145,7 +145,7 @@ public class UpdateSpreadsheet extends Authentication {
                 .setUpdateSheetProperties(new UpdateSheetPropertiesRequest()
                         .setProperties(new SheetProperties()
                                 .setSheetId(0)
-                                .setTitle("New Sheet Name"))
+                                .setTitle(courseTitle))
                         .setFields("title")));
 
 
@@ -319,21 +319,6 @@ public class UpdateSpreadsheet extends Authentication {
      */
     private boolean emptyColumn()
             throws ServiceException, IOException, URISyntaxException {
-        return isEmptyField();  // Helper function checking each field
-    }
-
-
-    /**
-     * This is a helper function that will
-     * traverse each row and check whether
-     * there is an empty field within that
-     * row. Return false if
-     * one of the field is null indicating
-     * an empty field. Otherwise
-     * the entire row has been filled
-     */
-    private boolean isEmptyField()
-            throws IOException, ServiceException, URISyntaxException {
 
         SpreadsheetService spreadsheetService = new SpreadsheetService("Attendance");
 
@@ -353,113 +338,44 @@ public class UpdateSpreadsheet extends Authentication {
         }
 
         return false;
+
     }
 
 
+    /**
+     * This is a helper function that will
+     * traverse each row and check whether
+     * there is an empty field within that
+     * row. Return false if
+     * one of the field is null indicating
+     * an empty field. Otherwise
+     * the entire row has been filled
+     */
+//    private boolean isEmptyField()
+//            throws IOException, ServiceException, URISyntaxException {
+//
+//        SpreadsheetService spreadsheetService = new SpreadsheetService("Attendance");
+//
+//        URL urlSpreadsheet = new URL(getUrlFeed());
+//        SpreadsheetFeed spreadsheetFeed = spreadsheetService.getFeed(urlSpreadsheet, SpreadsheetFeed.class);
+//        SpreadsheetEntry spreadsheetEntry = spreadsheetFeed.getEntries().get(0);
+//
+//
+//        ListFeed listFeed = spreadsheetService.getFeed(spreadsheetEntry.getWorksheetFeedUrl(), ListFeed.class);
+//        List<ListEntry> listEntries = listFeed.getEntries();
+//
+//        for (ListEntry r : listEntries) {
+//            for (String tag : r.getCustomElements().getTags()) {
+//                if (r.getCustomElements().getValue(tag) == null)
+//                    return true;
+//            }
+//        }
+//
+//        return false;
+//    }
 
-    public static void main(String agv[]) throws IOException, ServiceException, URISyntaxException {
 
-        int updateRow;
-        if ((updateRow = new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("jamesrogers", "218679878")) >= 0) {
 
-
-
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
-
-            updateSpreadsheet.updateAttendance(updateRow);
-
-
-        }
-
-
-        if ((updateRow = new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("andrewobrigewit", "218690707")) >= 0) {
-
-
-
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
-            updateSpreadsheet.updateAttendance(updateRow);
-
-        }
-
-
-
-        if ((updateRow = new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("stevenxiong", "210809639")) >= 0) {
-
-
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
-
-            updateSpreadsheet.updateAttendance(updateRow);
-
-
-        }
-
-
-        if ((updateRow = new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("dallasberry", "218676836")) >= 0) {
-
-
-
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
-            updateSpreadsheet.updateAttendance(updateRow);
-        }
-
-
-
-
-        if ((updateRow = new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("bhushanladde", "218706203")) >= 0) {
-
-
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
-
-            updateSpreadsheet.updateAttendance(updateRow);
-
-
-        }
-
-
-        if ((updateRow = new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("tuyenle", "218694867")) >= 0) {
-
-
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
-            updateSpreadsheet.updateAttendance(updateRow);
-        }
-
-
-
-        if ((updateRow = new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("sasonbaghdadi", "216722988")) >= 0) {
-
-
-
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
-
-            updateSpreadsheet.updateAttendance(updateRow);
-
-
-        }
-
-
-
-
-        if ((updateRow = new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("dallasberry", "218676836")) >= 0) {
-
-
-
-            UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
-            updateSpreadsheet1.updateAttendance(updateRow);
-        }
-
-
-
-
-
-        if ((updateRow = new Authentication("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI").isInputValid("ayl37", "212712657")) >= 0) {
-
-
-
-            UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
-            updateSpreadsheet1.updateAttendance(updateRow);
-        }
-
-    }
 
 
 }

@@ -73,12 +73,14 @@ public class Student extends HttpServlet {
                      * It will return any value that is return than or equal 0 indicating that there exist
                      * a username and student id in the spreadsheet. Otherwise, it will return -1 indicating an error
                      */
-                    Authentication authentication = new Authentication(spreadsheetID);
-                    int updateRow = authentication.isInputValid(username, studentId);
-                    if (updateRow  >= 0) {
+
+                    int updateRow;
+                    if ((updateRow = new Authentication(spreadsheetID).isInputValid(username, studentId))  >= 0) {
+
                         String courseTitle = Professor.getCourseTitle(passcode);
 
-                        displayConfirmation(response, request, username, spreadsheetID, updateRow, authentication.getAccessHeader());
+                        displayConfirmation(response, request, username, spreadsheetID, updateRow, courseTitle);
+
                     } else {
                         RequestDispatcher rd = getServletContext().getRequestDispatcher("/Error.jsp");  // No username or id exist within any particular row, so prompt an error page. Declaring a service request
                         rd.forward(request, response);      // forward a request to that page
@@ -101,7 +103,7 @@ public class Student extends HttpServlet {
 
 
     private void displayConfirmation(HttpServletResponse response, HttpServletRequest request,
-                                            String username, String spreadsheetID,  int updateRow, int accessHeader)
+                                            String username, String spreadsheetID,  int updateRow, String courseTitle)
     throws IOException, ServletException {
         // Update spreadsheet with the corresponding passcode input by student
 
@@ -109,11 +111,8 @@ public class Student extends HttpServlet {
         // Set attribute to deploy them to another page, which is the Success.jsp file
         request.setAttribute("spreadsheetID", spreadsheetID);
         request.setAttribute("username", username);
-        //request.setAttribute("courseTitle", courseTitle);
+        request.setAttribute("courseTitle", courseTitle);
         request.setAttribute("updateRow", updateRow);
-        request.setAttribute("accessHeader", accessHeader);
-       // request.setAttribute("maxCol", maxCol);
-
 
 
         rd = getServletContext().getRequestDispatcher("/Success.jsp");  // Prompt a service request

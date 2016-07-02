@@ -64,7 +64,7 @@ public class Professor extends HttpServlet {
                 "<H1 ALIGN=\"CENTER\">" + title + "</H1>\n" +
                 "<UL>\n" +
                 "   <LI><B>name</B>: "
-                + Arrays.toString(professorData.toArray()) + "\n" +
+                + dataIn.get(0) + "\n" +
                 "   <LI><B>class and section #</B>: "
                 + dataIn.get(1) + "\n" +
                 "   <LI><B>passcode</B>: "

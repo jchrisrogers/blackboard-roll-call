@@ -27,7 +27,6 @@
 <body>
 
 Thank you for your submission. An email confirmation has been sent to <%=request.getAttribute("username") + "@csus.edu"%>
-<%=request.getAttribute("accessHeader")%>
 
 <%
 
@@ -43,7 +42,7 @@ Thank you for your submission. An email confirmation has been sent to <%=request
 
             // Update the spreadsheet
             UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet(spreadsheetID);
-            updateSpreadsheet.updateAttendance(updateRow);
+            updateSpreadsheet.updateAttendance(updateRow, courseTitle);
 
             // Send email notification
            // new SendMail(username, courseTitle);
