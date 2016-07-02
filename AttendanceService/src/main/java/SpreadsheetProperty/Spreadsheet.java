@@ -35,15 +35,14 @@ public class Spreadsheet {
     /**
      * Spreadsheet ID
      */
-    private static String spreadsheetID;
+    private String spreadsheetID;
 
 
 
     /**
      * Total Rows and columns of a spreadsheet
      **/
-    private static int rows;
-    private static int cols;
+
 
     /**
      * URL link
@@ -75,12 +74,11 @@ public class Spreadsheet {
      *
      * @param spreadsheetID
      */
-    public Spreadsheet(String spreadsheetID)
+    Spreadsheet(String spreadsheetID)
             throws ServiceException, URISyntaxException, IOException {
-        Spreadsheet.spreadsheetID = spreadsheetID;
+        this.spreadsheetID = spreadsheetID;
         url_feed = "https://spreadsheets.google.com/feeds/worksheets/" + spreadsheetID + "/public/full";
-        rows = totalRow();
-        cols = totalCol();
+
     }
 
 
@@ -102,12 +100,12 @@ public class Spreadsheet {
     /**
      * Return total rows and columns
      */
-    public int getMaxRows() {
-        return rows;
+    public int getMaxRows() throws ServiceException, IOException, URISyntaxException {
+        return totalRow();
     }
 
-    public int getMaxCols() {
-        return cols;
+    public int getMaxCols() throws ServiceException, IOException, URISyntaxException {
+        return totalCol();
     }
 
     /**

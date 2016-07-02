@@ -1,6 +1,8 @@
 package servlet;
 
 import SpreadsheetProperty.Authentication;
+import SpreadsheetProperty.Spreadsheet;
+import SpreadsheetProperty.UpdateSpreadsheet;
 import com.google.gdata.util.ServiceException;
 
 import javax.servlet.RequestDispatcher;
@@ -71,10 +73,12 @@ public class Student extends HttpServlet {
                      * It will return any value that is return than or equal 0 indicating that there exist
                      * a username and student id in the spreadsheet. Otherwise, it will return -1 indicating an error
                      */
-                    int updateRow;
-                    if ((updateRow = new Authentication(spreadsheetID).isInputValid(username, studentId)) >= 0) {
+                    Authentication authentication = new Authentication(spreadsheetID);
+                    int updateRow = authentication.isInputValid(username, studentId);
+                    if (updateRow  >= 0) {
                         String courseTitle = Professor.getCourseTitle(passcode);
-                        displayConfirmation(response, request, username, courseTitle, updateRow);
+
+                        displayConfirmation(response, request, username, spreadsheetID, updateRow, authentication.getAccessHeader());
                     } else {
                         RequestDispatcher rd = getServletContext().getRequestDispatcher("/Error.jsp");  // No username or id exist within any particular row, so prompt an error page. Declaring a service request
                         rd.forward(request, response);      // forward a request to that page
@@ -97,15 +101,19 @@ public class Student extends HttpServlet {
 
 
     private void displayConfirmation(HttpServletResponse response, HttpServletRequest request,
-                                            String username, String courseTitle,  int updateRow)
+                                            String username, String spreadsheetID,  int updateRow, int accessHeader)
     throws IOException, ServletException {
         // Update spreadsheet with the corresponding passcode input by student
 
         RequestDispatcher rd;
         // Set attribute to deploy them to another page, which is the Success.jsp file
+        request.setAttribute("spreadsheetID", spreadsheetID);
         request.setAttribute("username", username);
-        request.setAttribute("courseTitle", courseTitle);
+        //request.setAttribute("courseTitle", courseTitle);
         request.setAttribute("updateRow", updateRow);
+        request.setAttribute("accessHeader", accessHeader);
+       // request.setAttribute("maxCol", maxCol);
+
 
 
         rd = getServletContext().getRequestDispatcher("/Success.jsp");  // Prompt a service request

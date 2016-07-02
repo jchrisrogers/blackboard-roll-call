@@ -57,10 +57,11 @@ public class UpdateSpreadsheet extends Authentication {
      * current column, row and
      * date in the spreadsheet
      */
-    public UpdateSpreadsheet()
+    public UpdateSpreadsheet(String spreadsheetID)
             throws IOException, ServiceException, URISyntaxException {
-
+        super(spreadsheetID);
         attendanceColumn = getMaxCols();       // get the current column of the spreadsheet. Inherited from Spreadsheet Property
+
     }
 
 
@@ -88,12 +89,12 @@ public class UpdateSpreadsheet extends Authentication {
          * **/
         int accessColumn = getAccessHeader();
 
-
+        System.out.println(accessColumn + " " + updateRow + " " + attendanceColumn);
 
         /** An empty column is the column that missing a value in a specific cell. Otherwise, the column is filled **/
 
         // If there is no "Attendance" and "Last Access" header column
-        if (!emptyColumn() && accessColumn >= getMaxCols()) {
+        if (!emptyColumn() && accessColumn > getMaxCols()) {
 
 
             // If both "Last Access" and "Attendance" header are missing
@@ -363,7 +364,7 @@ public class UpdateSpreadsheet extends Authentication {
 
 
 
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
+            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
 
             updateSpreadsheet.updateAttendance(updateRow);
 
@@ -375,7 +376,7 @@ public class UpdateSpreadsheet extends Authentication {
 
 
 
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
+            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
             updateSpreadsheet.updateAttendance(updateRow);
 
         }
@@ -385,7 +386,7 @@ public class UpdateSpreadsheet extends Authentication {
         if ((updateRow = new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("stevenxiong", "210809639")) >= 0) {
 
 
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
+            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
 
             updateSpreadsheet.updateAttendance(updateRow);
 
@@ -397,7 +398,7 @@ public class UpdateSpreadsheet extends Authentication {
 
 
 
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
+            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
             updateSpreadsheet.updateAttendance(updateRow);
         }
 
@@ -407,7 +408,7 @@ public class UpdateSpreadsheet extends Authentication {
         if ((updateRow = new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("bhushanladde", "218706203")) >= 0) {
 
 
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
+            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
 
             updateSpreadsheet.updateAttendance(updateRow);
 
@@ -418,7 +419,7 @@ public class UpdateSpreadsheet extends Authentication {
         if ((updateRow = new Authentication("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg").isInputValid("tuyenle", "218694867")) >= 0) {
 
 
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
+            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
             updateSpreadsheet.updateAttendance(updateRow);
         }
 
@@ -428,7 +429,7 @@ public class UpdateSpreadsheet extends Authentication {
 
 
 
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
+            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet("1wXIN0kQK1p3_Zff-xYQs_LQkz8reDo11yg3b6TAkYDg");
 
             updateSpreadsheet.updateAttendance(updateRow);
 
@@ -442,7 +443,7 @@ public class UpdateSpreadsheet extends Authentication {
 
 
 
-            UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet();
+            UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
             updateSpreadsheet1.updateAttendance(updateRow);
         }
 
@@ -454,7 +455,7 @@ public class UpdateSpreadsheet extends Authentication {
 
 
 
-            UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet();
+            UpdateSpreadsheet updateSpreadsheet1 = new UpdateSpreadsheet("1xXOeJvmKwgnjU2wB8ViwTMMs0Mqg-hu301gKgy4eBdI");
             updateSpreadsheet1.updateAttendance(updateRow);
         }
 

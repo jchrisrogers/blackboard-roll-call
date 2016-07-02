@@ -27,11 +27,14 @@
 <body>
 
 Thank you for your submission. An email confirmation has been sent to <%=request.getAttribute("username") + "@csus.edu"%>
-<%=request.getAttribute("courseTitle")%>
+<%=request.getAttribute("accessHeader")%>
+
 <%
 
     int updateRow =  (Integer) request.getAttribute("updateRow");
+
     String courseTitle = (String)request.getAttribute("courseTitle");
+    String spreadsheetID = (String) request.getAttribute("spreadsheetID");
 
 
     try {
@@ -39,7 +42,7 @@ Thank you for your submission. An email confirmation has been sent to <%=request
             // Create a new spreadsheet with properties such as row, column and set the title for that spreadsheet
 
             // Update the spreadsheet
-            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet();
+            UpdateSpreadsheet updateSpreadsheet = new UpdateSpreadsheet(spreadsheetID);
             updateSpreadsheet.updateAttendance(updateRow);
 
             // Send email notification

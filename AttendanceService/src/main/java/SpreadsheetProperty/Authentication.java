@@ -72,10 +72,6 @@ public class Authentication extends Spreadsheet {
     }
 
 
-    int getUpdateRow() {
-        return updateRow;
-    }
-
 
 
     /**
@@ -114,7 +110,7 @@ public class Authentication extends Spreadsheet {
      * @return
      */
 
-    int getAccessHeader()
+    public int getAccessHeader()
     throws IOException, ServiceException {
 
 
