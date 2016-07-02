@@ -32,40 +32,40 @@ class Authorization  {
     /**
      * Application name.
      */
-    private static final String APPLICATION_NAME =
+    private  String APPLICATION_NAME =
             "Google Sheets API Java Quickstart";
 
     /**
      * Directory to store user credentials for this application.
      */
-    private static final java.io.File DATA_STORE_DIR = new java.io.File(
+    private  java.io.File DATA_STORE_DIR = new java.io.File(
             System.getProperty("user.home"), ".credentials//sheets.googleapis.com-java-quickstart.json");
 
     /**
      * Global instance of the {@link FileDataStoreFactory}.
      */
-    private static FileDataStoreFactory DATA_STORE_FACTORY;
+    private FileDataStoreFactory DATA_STORE_FACTORY;
 
     /**
      * Global instance of the JSON factory.
      */
-    private static final JsonFactory JSON_FACTORY =
+    private JsonFactory JSON_FACTORY =
             JacksonFactory.getDefaultInstance();
 
     /**
      * Global instance of the HTTP transport.
      */
-    private static HttpTransport HTTP_TRANSPORT;
+    private HttpTransport HTTP_TRANSPORT;
 
     /**
      * Global instance of the scopes required by this quickstart.
      * If modifying these scopes, delete your previously saved credentials
      * at ~/.credentials/sheets.googleapis.com-java-quickstart.json
      */
-    private static final List<String> SCOPES =
+    private List<String> SCOPES =
             Arrays.asList(SheetsScopes.SPREADSHEETS);
 
-    static {
+    {
         try {
             HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
             DATA_STORE_FACTORY = new FileDataStoreFactory(DATA_STORE_DIR);
@@ -81,7 +81,7 @@ class Authorization  {
      * @return an authorized Credential object.
      * @throws IOException
      */
-    private static Credential authorize() throws IOException {
+    private Credential authorize() throws IOException {
         // Load client secrets.
         InputStream in = new FileInputStream("/Users/TinTin/IdeaProjects/application/AttendanceService/src/main/resources/client_secret.json");
 
@@ -108,7 +108,7 @@ class Authorization  {
      * @return an authorized Sheets API client service
      * @throws IOException
      */
-    static Sheets getSheetsService() throws IOException {
+     Sheets getSheetsService() throws IOException {
         Credential credential = authorize();
         return new Sheets.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
                 .setApplicationName(APPLICATION_NAME)

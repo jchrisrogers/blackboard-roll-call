@@ -21,7 +21,7 @@ import java.util.Set;
  * total row, column and its
  * ID
  */
-public class Spreadsheet {
+public class Spreadsheet extends Authorization {
 
     /*************************************PRIVATE VARIABLE****************************************************************/
 
@@ -57,15 +57,15 @@ public class Spreadsheet {
      * to minimize the amount of time invoking getSheetService()
      * from mypackage.SpreadsheetProperty.Authorization class
      */
-    static Sheets SHEET_SERVICE;
+    Sheets SHEET_SERVICE;
 
-    static {
+     {
         try {
-            SHEET_SERVICE = Authorization.getSheetsService();
+            SHEET_SERVICE = new Authorization().getSheetsService();
         } catch (IOException e) {
             System.exit(1);
         }
-    }
+     }
 
 
     /**
@@ -76,6 +76,7 @@ public class Spreadsheet {
      */
     Spreadsheet(String spreadsheetID)
             throws ServiceException, URISyntaxException, IOException {
+        super();
         this.spreadsheetID = spreadsheetID;
         url_feed = "https://spreadsheets.google.com/feeds/worksheets/" + spreadsheetID + "/public/full";
 

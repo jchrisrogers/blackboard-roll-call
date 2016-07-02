@@ -6,7 +6,6 @@ import com.google.gdata.data.spreadsheet.*;
 import com.google.gdata.util.ServiceException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -24,9 +23,6 @@ public class Authentication extends Spreadsheet {
     /**Create an array of student and get the header row of the spreadsheet**/
     private List<ListEntry> listEntry = getListEntry();
     private Set<String> headerRow = getHeaderRow();
-
-    /** Row that we want to update **/
-    private static int updateRow;
 
     /*****************************************************************************************************/
 
@@ -57,11 +53,12 @@ public class Authentication extends Spreadsheet {
             throws ServiceException, IOException, URISyntaxException {
 
 
-        // listEntry.get(updateRow).getPlainTextContent().split(",")[getUsernameHeader()].split(":\\s")[1].equals(username)
 
         // Check if student ID and the name input from user is valid. ID will be checked first then user's name
         // isIDValid() will check for valid id first. If it's found within the spreadsheet continue to validate for user's input username
         // If username is valid then return the row index. Otherwise, return -1 since there is no exist row with that username
+        /* Row that we want to update */
+        int updateRow;
         if ((updateRow = isIDValid(id)) < getMaxRows() && updateRow >= 0 &&
                 listEntry.get(updateRow).getCustomElements().getValue("username").equals(username)) {
 
@@ -129,34 +126,6 @@ public class Authentication extends Spreadsheet {
         return index;
 
     }
-
-
-//    /**
-//     * Cell query to get the index of username column. Assume user input Username column in a random order
-//     */
-//    private int getUsernameHeader() throws IOException, ServiceException {
-//        int index = 0;
-//        for (String element : headerRow) {
-//            if (element.equals("username"))
-//                break;
-//            index++;
-//        }
-//        return index;
-//    }
-
-//    /**
-//     * Cell query to get the index of student id column. Assume user input ID column in a random order
-//     */
-//    private int getidIndex() throws IOException, ServiceException {
-//        int index = 0;
-//        for (String element : headerRow) {
-//            if (element.matches(".*[id]$"))   // Need to have the pattern id or ID in it. Otherwise, the program can't detect an id column so it will assume that column is missing
-//                break;
-//            index++;
-//        }
-//
-//        return index;
-//    }
 
 
 

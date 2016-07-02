@@ -34,7 +34,7 @@ public class UpdateSpreadsheet extends Authentication {
      * change overtime since we are adding
      * data in a horizontal position.
      */
-    private static int attendanceColumn;
+    private int attendanceColumn;
 
 
     /**
