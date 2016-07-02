@@ -90,10 +90,10 @@ public class Authentication extends Spreadsheet {
 
 
         int idFound = 0;     // A student ID found within a particular array. The total numbers of array really depends on how many student we have total
-
+        int maxRow = getMaxCols();
 
         // Traverse the entry of each array. Since each student belong to an Array
-        while (true) {
+        while (idFound < maxRow) {
             // Within that entry find a "studentid" header with the value that matches the one student input
             if (listEntry.get(idFound).getCustomElements().getValue("studentid").equals(id)) {
                 break;
@@ -102,7 +102,7 @@ public class Authentication extends Spreadsheet {
         }
 
 
-        return idFound >= 0 ? idFound : -1;  // If student ID can't be found, return -1
+        return idFound < maxRow ? idFound : -1;  // If student ID can't be found, return -1
     }
 
 

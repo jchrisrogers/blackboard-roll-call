@@ -170,7 +170,7 @@
 </head>
 
 <body>
-<img src="newyork.jpg">
+<img src="newyork.jpg" style="width:100%">
 <div class="signin">
     <h1>Login Form</h1>
     <form action="${pageContext.request.contextPath}/servlet/Student" id="require" method="post">
