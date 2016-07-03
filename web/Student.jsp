@@ -22,13 +22,14 @@
             background: linear-gradient(grey, black); /* Standard syntax */
             height: 700px;
             margin-top: 8.2pc;
+            max-width: 100%;
         }
         img {
             height: 315px;
             position: absolute;
             left: 0;
             top: 110px;
-            width: 1450px;
+            width: 100%;
             z-index: -1;
         }
 
@@ -170,7 +171,7 @@
 </head>
 
 <body>
-<img src="newyork.jpg" style="width:100%">
+<img src="newyork.jpg">
 <div class="signin">
     <h1>Login Form</h1>
     <form action="${pageContext.request.contextPath}/servlet/Student" id="require" method="post">

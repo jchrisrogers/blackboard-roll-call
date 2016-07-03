@@ -91,7 +91,9 @@ public class UpdateSpreadsheet extends Authentication {
 
 
 
-        /** An empty column is the column that missing a value in a specific cell. Otherwise, the column is filled **/
+        /** An empty column is the column that missing a value in a specific cell. Otherwise, the column is filled.
+         *  If the column is filled then move on to the next column by inserting a new Attendance header and fill
+         *  that column up with yes checkmark according to a specific row. **/
 
         // If there is no "Attendance" and "Last Access" header column
         if (!emptyColumn() && accessColumn >= getMaxCols()) {
@@ -152,7 +154,10 @@ public class UpdateSpreadsheet extends Authentication {
         // Add checkmark yes to the header column "Attendance"
         values.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue("yes")));
+                        .setStringValue("yes"))
+                .setUserEnteredFormat(new CellFormat()
+                .setPadding(new Padding()
+                .setLeft(Integer.valueOf(200)))));
 
 
         // Add request for check mark "yes"
@@ -164,7 +169,7 @@ public class UpdateSpreadsheet extends Authentication {
                                 .setColumnIndex(attendanceColumn))
                         .setRows(Arrays.asList(
                                 new RowData().setValues(values)))
-                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+                        .setFields("userEnteredValue,userEnteredFormat.Padding")));
 
 
         // Final call to publish the updated sheet to google drive
@@ -197,7 +202,9 @@ public class UpdateSpreadsheet extends Authentication {
         // Update the time last access by student
         values.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue(CURRENT_DATE)));
+                        .setStringValue(CURRENT_DATE))
+                .setUserEnteredFormat(new CellFormat()
+                        .setPadding(new Padding().setLeft(Integer.valueOf(30)))));
 
 
         // Add request for Access time
@@ -209,7 +216,7 @@ public class UpdateSpreadsheet extends Authentication {
                                 .setColumnIndex(accessColumn))
                         .setRows(Arrays.asList(
                                 new RowData().setValues(values)))
-                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+                        .setFields("userEnteredValue,userEnteredFormat.Padding")));
 
         // Final call to publish the updated sheet to google drive
         BatchUpdateSpreadsheetRequest batchUpdateRequest = new BatchUpdateSpreadsheetRequest()
@@ -240,7 +247,11 @@ public class UpdateSpreadsheet extends Authentication {
         // Add "Attendance" header column
         values.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue("Attendance on: " + CURRENT_DATE)));
+                        .setStringValue("Attendance on: " + CURRENT_DATE))
+                .setUserEnteredFormat(new CellFormat()
+                        .setTextFormat(new TextFormat()
+                        .setBold(Boolean.TRUE))
+                        .setPadding(new Padding().setLeft(Integer.valueOf(30)))));
 
 
         requests.add(new Request()
@@ -251,7 +262,7 @@ public class UpdateSpreadsheet extends Authentication {
                                 .setColumnIndex(column))
                         .setRows(Arrays.asList(
                                 new RowData().setValues(values)))
-                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+                        .setFields("userEnteredValue,userEnteredFormat.textFormat,userEnteredFormat.Padding")));
 
 
         // Final call to publish the updated sheet to google drive
@@ -282,13 +293,21 @@ public class UpdateSpreadsheet extends Authentication {
         // Add new "Last Access" header
         values.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue("Last Access")));
+                        .setStringValue("Last Access"))
+                .setUserEnteredFormat(new CellFormat()
+                        .setTextFormat(new TextFormat()
+                        .setBold(Boolean.TRUE))
+                        .setPadding(new Padding().setLeft(Integer.valueOf(100)))));
 
 
         // Add new "Attendance" header
         values.add(new CellData()
                 .setUserEnteredValue(new ExtendedValue()
-                        .setStringValue("Attendance " + CURRENT_DATE)));
+                        .setStringValue("Attendance " + CURRENT_DATE))
+                .setUserEnteredFormat(new CellFormat()
+                        .setTextFormat(new TextFormat()
+                                .setBold(Boolean.TRUE))
+                        .setPadding(new Padding().setLeft(Integer.valueOf(30)))));
 
 
         requests.add(new Request()
@@ -299,7 +318,7 @@ public class UpdateSpreadsheet extends Authentication {
                                 .setColumnIndex(column))
                         .setRows(Arrays.asList(
                                 new RowData().setValues(values)))
-                        .setFields("userEnteredValue,userEnteredFormat.backgroundColor")));
+                        .setFields("userEnteredValue,userEnteredFormat.textFormat,userEnteredFormat.Padding")));
 
 
         // Final call to publish the updated sheet to google drive
@@ -376,8 +395,7 @@ public class UpdateSpreadsheet extends Authentication {
 
 
 
-
-
+   
 }
 
 
