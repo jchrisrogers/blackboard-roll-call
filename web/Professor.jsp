@@ -17,11 +17,18 @@ To change this template use File | Settings | File Templates.
     <style>
         body {
             text-align: center;
+            max-width: 100%;
         }
 
         #dialog {
             text-align: center;
+            float: left;
         }
+
+        #profform {
+            display: inline-block;
+        }
+
     </style>
 </head>
 <body>
@@ -30,7 +37,7 @@ To change this template use File | Settings | File Templates.
 <button id="instruction">Click for Instruction</button>
 <button id="generator">Generate passcode</button>
 
-
+<div id="profform">
 <!-- Copy google spreadsheet ID here and passcode will appear here -->
 <form action="${pageContext.request.contextPath}/servlet/Professor" id="submission" method="post">
 
@@ -61,7 +68,7 @@ To change this template use File | Settings | File Templates.
     <button id="submit" type="submit">Submit</button>
     <button type="reset">Reset</button>
 </form>
-
+</div>
 
 <!-- Instruction pop and hide -->
 <div id="dialog" title="Instruction">
@@ -84,12 +91,22 @@ To change this template use File | Settings | File Templates.
             autoOpen: false,    // hide on default
             show: {
                 effect: "blind",
-                duration: 1000
+                duration: 1000,
+                responsive: true
             },
             // Explode out of the screen when click close
             hide: {
                 effect: "explode",
                 duration: 1000
+            }
+            , position: {
+                my: "left",
+                at: "left+10",
+                of: window,
+                collision: "none"
+            }
+            , create: function (event, ui) {
+                $(event.target).parent().css('position', 'fixed');
             }
         });
 
@@ -100,8 +117,18 @@ To change this template use File | Settings | File Templates.
                 autoOpen: false,
                 show: {
                     effect: "blind",
-                    duration: 1000
-                },
+                    duration: 1000,
+                    responsive: true
+                }
+                , position: {
+                    my: "right",
+                    at: "right+10",
+                    of: window,
+                    collision: "none"
+                }
+            , create: function (event, ui) {
+                $(event.target).parent().css('position', 'fixed');
+                }
             });
         });
 
