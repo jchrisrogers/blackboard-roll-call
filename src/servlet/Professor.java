@@ -90,7 +90,7 @@ public class Professor extends HttpServlet {
             if (list.get(2).equals(passcode))       // Check if passcode exist
                 return (String) list.get(3);        // Return spreadsheet id
         }
-        return "";      // Return an empty string if no passcode exist
+        return "DNE";      // Return 'does not exist' if passcode is wrong
     }
 
     /**
@@ -102,6 +102,6 @@ public class Professor extends HttpServlet {
                 return (String) list.get(1);    // Cast to string since list.get(1) returns an object
             }
         }
-        return "";
+        return "DNE";
     }
 }

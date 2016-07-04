@@ -17,11 +17,22 @@ To change this template use File | Settings | File Templates.
     <style>
         body {
             text-align: center;
+            max-width: 100%;
         }
 
         #dialog {
             text-align: center;
         }
+
+        #container {
+            max-width: 50%;
+            height: 100%;
+        }
+
+        .submission {
+
+        }
+
     </style>
 </head>
 <body>
@@ -29,10 +40,10 @@ To change this template use File | Settings | File Templates.
 <!-- Two button for instruction and passcode generator -->
 <button id="instruction">Click for Instruction</button>
 <button id="generator">Generate passcode</button>
-
-
+<div id="container">
+    <div id="codesub">
 <!-- Copy google spreadsheet ID here and passcode will appear here -->
-<form action="${pageContext.request.contextPath}/servlet/Professor" id="submission" method="post">
+<form action="${pageContext.request.contextPath}/servlet/Professor" class="submission" method="post">
 
     <table>
         <tr>
@@ -61,8 +72,7 @@ To change this template use File | Settings | File Templates.
     <button id="submit" type="submit">Submit</button>
     <button type="reset">Reset</button>
 </form>
-
-
+</div>
 <!-- Instruction pop and hide -->
 <div id="dialog" title="Instruction">
     <p>1. Create a spreadsheet on google drive</p>
@@ -70,11 +80,22 @@ To change this template use File | Settings | File Templates.
     <p>3. Copy and paste the link into the spreadsheet ID box</p>
     <p>4. Generate the passcode to populate the spreadsheet with student attendance</p>
 </div>
-
+</div>
 
 
 <!-- some scripting and jquery -->
 <script>
+
+    // This should make it so the submission dialog box
+    // moves in response to the browser window size
+   /* $(window).resize(function() {
+        $(".submission").position({
+            "my": "right",
+            "at": "right+10",
+            "of": "window",
+            "collision": "none"
+        });
+    });*/
 
     // Visual effect for dialog
     $(function () {
@@ -84,24 +105,46 @@ To change this template use File | Settings | File Templates.
             autoOpen: false,    // hide on default
             show: {
                 effect: "blind",
-                duration: 1000
+                duration: 1000,
+                responsive: true
             },
             // Explode out of the screen when click close
             hide: {
                 effect: "explode",
                 duration: 1000
             }
+            /*, position: {
+                my: "left",
+                at: "left+10",
+                of: window,
+                collision: "none"
+            }*/
+            /*, create: function (event, ui) {
+                $(event.target).parent().css('position', 'fixed');
+            }*/
         });
 
         // Visual effect for form submission
         // Automatically hide from user until clicked on the button "generate code"
         $(function () {
-            $('#submission').dialog({
+            $('.submission').dialog({
                 autoOpen: false,
                 show: {
                     effect: "blind",
-                    duration: 1000
+                    duration: 1000,
+                    responsive: true
                 },
+                // Explode out of the screen when click close
+                hide: {
+                    effect: "explode",
+                    duration: 1000
+                }
+                /*, position: {
+                    my: "right",
+                    at: "right+10",
+                    of: window,
+                    collision: "none"
+                }*/
             });
         });
 
@@ -119,7 +162,7 @@ To change this template use File | Settings | File Templates.
         // Input random number into input box with id="code"
         $("#code").val(Math.floor(Math.random() * 10000000000) + "");
         // Simultaneously open the submission form at the same time
-        $('#submission').dialog('open').submit(function (event) {
+        $('.submission').dialog('open').submit(function (event) {
             // Check whether passcode is left empty
             if ($('#code').val() === "") {
                 $('#codeMissing').text('code missing').show();

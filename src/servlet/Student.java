@@ -57,8 +57,8 @@ public class Student extends HttpServlet {
          * input passcode is valid, prompt the Professor
          * class to return the corresponding spreadsheetID
          */
-        String spreadsheetID = "";      // Spreadsheet ID from professor
-        if ((spreadsheetID = Professor.passcodeExist(passcode)).equals("")) {
+        String spreadsheetID = Professor.passcodeExist(passcode);      // Spreadsheet ID from professor
+        if (spreadsheetID.equals("DNE")) {
             displayError(response, request);
 
         } else {
